@@ -1,12 +1,9 @@
 package com.gem.babyplan.dao.test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.junit.Test;
 
@@ -47,14 +44,15 @@ public class DiscussDaoTest {
 	@Test
 	public void deleteTest() {
 		int discussId = 1;
-		dao.delete(discussId);
+		int dynamicId = 1;
+		dao.delete(dynamicId,discussId);
 	}
 	
 	// 查询所有评论
 	@Test
 	public void selectAllTest() {
-		int dynamicId = 1;
-		HashMap<Integer, List<Discuss>> map = dao.getAllSortedDiscuss(dynamicId);
+		int dynamicId = 4;
+		TreeMap<Integer, List<Discuss>> map = dao.getAllSortedDiscuss(dynamicId);
 		
 		for(Map.Entry<Integer, List<Discuss>> entry :  map.entrySet()){
 			int father_id = entry.getKey();

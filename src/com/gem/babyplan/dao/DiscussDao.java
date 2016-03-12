@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import com.gem.babyplan.entity.Discuss;
 import com.gem.babyplan.entity.Dynamic;
@@ -18,9 +19,9 @@ import com.gem.babyplan.exception.DiscussRuntimeException;
 import com.gem.babyplan.utils.DBConnection;
 
 public class DiscussDao {
-	
-	private HashMap<Integer, List<Discuss>> discusses = new HashMap<Integer, List<Discuss>>();
-	
+
+	private TreeMap<Integer, List<Discuss>> discusses = new TreeMap<Integer, List<Discuss>>();
+
 	// 插入
 	public void save(Discuss discuss) {
 		// 1.连数据库
@@ -37,10 +38,10 @@ public class DiscussDao {
 			// 4.设置？的值
 			prep.setInt(1, discuss.getDynamic().getDynamicId());
 			prep.setInt(2, discuss.getParent().getParentId());
-			int discussSuperId = discuss.getDiscuss().getDiscussId();
-			if(discussSuperId == 0){
+			Integer discussSuperId = discuss.getDiscuss().getDiscussId();
+			if (discussSuperId == null) {
 				prep.setNull(3, Types.INTEGER);
-			}else{
+			} else {
 				prep.setInt(3, discussSuperId);
 			}
 			prep.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
@@ -64,32 +65,29 @@ public class DiscussDao {
 	}
 
 	// 删除,批量删除
-	public void delete(Integer discussId) {
+	public void delete(Integer dynamicId,Integer discussId) {
 		Connection conn = null;
 		PreparedStatement prep = null;
 		List<Discuss> list = getDiscussByDiscussSuperId(discussId);
-		
+
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "delete from discuss where discussId = ?";
-			
+			String sql = "delete from discuss where discussId = ? and dynamicId = ?";
+
 			prep = conn.prepareStatement(sql);
 			prep.setInt(1, discussId);
-			
-			if(list.size()==0&&list!=null)
-			{
+			prep.setInt(2, dynamicId);
+
+			if (list.size() == 0 && list != null) {
 				prep.executeUpdate();
-			}
-			else
-			{
-				for (Discuss discuss : list)
-				{
-					delete(discuss.getDiscussId());
+			} else {
+				for (Discuss discuss : list) {
+					delete(dynamicId,discuss.getDiscussId());
 				}
-				
+
 				prep.executeUpdate();
 			}
-			
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new DiscussRuntimeException("评论删除方法出错");
@@ -103,14 +101,12 @@ public class DiscussDao {
 			DBConnection.release(conn, prep);
 		}
 	}
-	
 
-	public HashMap<Integer, List<Discuss>> getAllSortedDiscuss(Integer dynamicId){
-		getSortDiscuss(dynamicId,null);
+	public TreeMap<Integer, List<Discuss>> getAllSortedDiscuss(Integer dynamicId) {
+		getSortDiscuss(dynamicId, null);
 		return discusses;
 	}
-	
-	
+
 	// 查询所有评论
 	public void getSortDiscuss(Integer dynamicId, Integer discussSuperId) {
 		Connection conn = null;
@@ -120,30 +116,31 @@ public class DiscussDao {
 		List<Discuss> list = new ArrayList<Discuss>();
 		try {
 			conn = DBConnection.getConnection();
-			if(discussSuperId==null){
-				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId is null";
+			if (discussSuperId == null) {
+				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId is null order by discussPublishTime asc";
 				prep = conn.prepareStatement(sql);
-			}else{
-				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId = ?";
+			} else {
+				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId = ? order by discussPublishTime asc";
 				prep = conn.prepareStatement(sql);
 				prep.setInt(2, discussSuperId);
 			}
 			prep.setInt(1, dynamicId);
 			rs = prep.executeQuery();
-			
+
 			Discuss discuss = null;
-			Dynamic dynamic  = null;
+			Dynamic dynamic = null;
 			Parent parent = null;
-			Discuss discuss1  = null;
-			
+			Discuss discuss1 = null;
+			ParentDao parentDao = new ParentDao();
+
 			while (rs.next()) {
 				discuss = new Discuss();
 				dynamic = new Dynamic();
 				dynamic.setDynamicId(rs.getInt("dynamicId"));
-				parent = new Parent();
-				parent.setParentId(rs.getInt("parentId"));
-				discuss1 = new Discuss();
-				discuss1.setDiscussId(rs.getInt("discussSuperId"));
+				parent = parentDao.getParentByParentId(rs.getInt("parentId"));
+//				parent.setParentId(rs.getInt("parentId"));
+				discuss1 = getDiscussByDiscussId(rs.getInt("discussSuperId"));
+//				discuss1.setDiscussId(rs.getInt("discussSuperId"));
 
 				discuss.setDiscussId(rs.getInt("discussId"));
 				discuss.setDynamic(dynamic);
@@ -152,18 +149,19 @@ public class DiscussDao {
 				discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
 				discuss.setDiscussText(rs.getString("discussText"));
 				discuss.setIsLast(rs.getInt("isLast"));
-				
-				if(discuss.getIsLast()!=0){
-					 getSortDiscuss(dynamicId, discuss.getDiscussId());
+
+				if (discuss.getIsLast() != 0) {
+					getSortDiscuss(dynamicId, discuss.getDiscussId());
 				}
 				list.add(discuss);
 			}
-			if(discuss.getDiscuss().getDiscussId() != null){
+			
+			if ((discuss.getDiscuss()) !=null && discuss.getDiscuss().getDiscussId() != null) {
 				discusses.put(discuss.getDiscuss().getDiscussId(), list);
-			}else {
+			} else {
 				discusses.put(0, list);
 			}
-			
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new DiscussRuntimeException("评论查询所有方法出错");
@@ -177,7 +175,7 @@ public class DiscussDao {
 			DBConnection.release(conn, prep, rs);
 		}
 	}
-	
+
 	// 根据主键得到评论
 	public Discuss getDiscussByDiscussId(Integer discussId) {
 		Connection conn = null;
@@ -186,25 +184,26 @@ public class DiscussDao {
 		Discuss discuss = null;
 		try {
 			conn = DBConnection.getConnection();
-			
+
 			String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where discussId = ?";
 			prep = conn.prepareStatement(sql);
 			prep.setInt(1, discussId);
 			rs = prep.executeQuery();
-			
-			Dynamic dynamic  = null;
+
+			Dynamic dynamic = null;
 			Parent parent = null;
-			Discuss discuss1  = null;
-			
+			Discuss discuss1 = null;
+			ParentDao parentDao = new ParentDao();
+
 			while (rs.next()) {
 				discuss = new Discuss();
 				dynamic = new Dynamic();
 				dynamic.setDynamicId(rs.getInt("dynamicId"));
-				parent = new Parent();
+				parent = parentDao.getParentByParentId(rs.getInt("parentId"));
 				parent.setParentId(rs.getInt("parentId"));
 				discuss1 = new Discuss();
 				discuss1.setDiscussId(rs.getInt("discussSuperId"));
-				
+
 				discuss.setDiscussId(rs.getInt("discussId"));
 				discuss.setDynamic(dynamic);
 				discuss.setParent(parent);
@@ -212,7 +211,7 @@ public class DiscussDao {
 				discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
 				discuss.setDiscussText(rs.getString("discussText"));
 				discuss.setIsLast(rs.getInt("isLast"));
-				
+
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -228,7 +227,7 @@ public class DiscussDao {
 		}
 		return discuss;
 	}
-	
+
 	// 根据父id得到评论
 	public List<Discuss> getDiscussByDiscussSuperId(Integer discussSuperId) {
 		Connection conn = null;
@@ -238,16 +237,16 @@ public class DiscussDao {
 		List<Discuss> list = new ArrayList<Discuss>();
 		try {
 			conn = DBConnection.getConnection();
-			
+
 			String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where discussSuperId = ?";
 			prep = conn.prepareStatement(sql);
 			prep.setInt(1, discussSuperId);
 			rs = prep.executeQuery();
-			
-			Dynamic dynamic  = null;
+
+			Dynamic dynamic = null;
 			Parent parent = null;
-			Discuss discuss1  = null;
-			
+			Discuss discuss1 = null;
+
 			while (rs.next()) {
 				discuss = new Discuss();
 				dynamic = new Dynamic();
@@ -256,7 +255,7 @@ public class DiscussDao {
 				parent.setParentId(rs.getInt("parentId"));
 				discuss1 = new Discuss();
 				discuss1.setDiscussId(rs.getInt("discussSuperId"));
-				
+
 				discuss.setDiscussId(rs.getInt("discussId"));
 				discuss.setDynamic(dynamic);
 				discuss.setParent(parent);
@@ -264,7 +263,7 @@ public class DiscussDao {
 				discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
 				discuss.setDiscussText(rs.getString("discussText"));
 				discuss.setIsLast(rs.getInt("isLast"));
-				
+
 				list.add(discuss);
 			}
 		} catch (ClassNotFoundException e) {

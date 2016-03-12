@@ -83,7 +83,7 @@ public class DynamicDao {
 		List<Dynamic> list = new ArrayList<Dynamic>();
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic";
+			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic order by dynamicPublishTime desc";
 			prep = conn.prepareStatement(sql);
 			rs = prep.executeQuery();
 			while (rs.next()) {
@@ -112,4 +112,56 @@ public class DynamicDao {
 		}
 		return list;
 	}
+	
+	
+	// 根据家长id的的到所有动态
+	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
+		Connection conn = null;
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+		List<Dynamic> list = new ArrayList<Dynamic>();
+		
+		StringBuffer sb = new StringBuffer();
+		
+		for (Integer parentId : parentIds) {
+			sb = sb.append(String.valueOf(parentId)+",");
+ 		}
+		
+		String parentIdString = "("+sb.toString().substring(0, sb.toString().length()-1)+")";
+		
+		
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic where parentId in "+parentIdString+" order by dynamicPublishTime desc";
+			prep = conn.prepareStatement(sql);
+
+			rs = prep.executeQuery();
+			while (rs.next()) {
+				Dynamic dynamic = new Dynamic();
+				Parent parent = new Parent();
+				parent.setParentId(rs.getInt("parentId"));
+				
+				dynamic.setDynamicId(rs.getInt("dynamicId"));
+				dynamic.setParent(parent);
+				dynamic.setDynamicText(rs.getString("dynamicText"));
+				dynamic.setDynamicFile(rs.getString("dynamicFile"));
+				dynamic.setDynamicPublishTime(rs.getTimestamp("dynamicPublishTime"));
+				list.add(dynamic);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} finally {
+			DBConnection.release(conn, prep, rs);
+		}
+		return list;
+	}
+	
 }

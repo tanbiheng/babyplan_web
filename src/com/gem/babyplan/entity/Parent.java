@@ -1,6 +1,8 @@
 package com.gem.babyplan.entity;
 
-public class Parent {
+import java.io.Serializable;
+
+public class Parent implements Serializable {
 	private int parentId;//家长id，主键
 	
 	private Student student;//学生

@@ -1,8 +1,9 @@
 package com.gem.babyplan.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Dynamic {
+public class Dynamic implements Serializable {
 	private Integer dynamicId;//动态id，主键
 	
 	private Parent parent;//家长

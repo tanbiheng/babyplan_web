@@ -147,5 +147,50 @@ public class ApplyDao {
 		}
 		return list;
 	}
+	
+	// 根据家长id查询家长对应的好友
+	public List<Apply> getApplyByParentId(int applyParentId) {
+		Connection conn = null;
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+		List<Apply> list = new ArrayList<Apply>();
+		ParentDao parentDao = new ParentDao();
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select applyId,applyParentId,beApplyParentId,applyText,applyStatus,applyTime from apply where applyParentId = ? and applyStatus = 2";
+			prep = conn.prepareStatement(sql);
+			prep.setInt(1, applyParentId);
+			rs = prep.executeQuery();
+			while (rs.next()) {
+				Apply apply = new Apply();
+				apply.setApplyId(rs.getInt("applyId"));
+
+				Parent applyParent = parentDao.getParentByParentId(rs.getInt("applyParentId"));
+//				applyParent.setParentId(rs.getInt("applyParentId"));
+				Parent beApplyParent = parentDao.getParentByParentId(rs.getInt("beApplyParentId"));
+//				beApplyParent.setParentId(rs.getInt("beApplyParentId"));
+
+				apply.setApplyParent(applyParent);
+				apply.setBeApplyParent(beApplyParent);
+				apply.setApplyText(rs.getString("applyText"));
+				apply.setApplyStatus(rs.getInt("applyStatus"));
+				apply.setApplyTime(rs.getTimestamp("applyTime"));
+				list.add(apply);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new ApplyRuntimeException("申请查询所有方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ApplyRuntimeException("申请查询所有方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ApplyRuntimeException("申请查询所有方法出错");
+		} finally {
+			DBConnection.release(conn, prep, rs);
+		}
+		return list;
+	}
+	
 
 }

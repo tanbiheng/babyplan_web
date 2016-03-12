@@ -1,9 +1,11 @@
 package com.gem.babyplan.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.gem.babyplan.dao.ApplyDao;
 import com.gem.babyplan.entity.Apply;
+import com.gem.babyplan.entity.Parent;
 
 public class ApplyService {
 	private ApplyDao dao = new ApplyDao();
@@ -26,6 +28,17 @@ public class ApplyService {
 	// 查询所有申请信息
 	public List<Apply> selectAll() {
 		return dao.selectAll();
+	}
+	
+	// 根据申请家长id得到申请家长的所有好友
+	public List<Parent> getParentFriendByParentId(int applyParentId){
+		List<Parent> parents = new ArrayList<Parent>();
+		List<Apply> applies = dao.getApplyByParentId(applyParentId);
+		for (Apply apply : applies) {
+			Parent parent = apply.getBeApplyParent();
+			parents.add(parent);
+		}
+		return parents;
 	}
 	
 }

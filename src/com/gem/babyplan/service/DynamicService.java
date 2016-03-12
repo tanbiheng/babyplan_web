@@ -22,4 +22,9 @@ public class DynamicService {
 	public List<Dynamic> selectAll() {
 		return dao.selectAll();
 	}
+	
+	// 根据家长id的的到所有动态
+	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
+		return dao.getDynamicByParentId(parentIds);
+	}
 }

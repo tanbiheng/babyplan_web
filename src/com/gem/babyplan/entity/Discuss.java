@@ -1,8 +1,9 @@
 package com.gem.babyplan.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Discuss {
+public class Discuss implements Serializable {
 	private Integer discussId;//评论id，主键
 	
 	private Discuss discuss;//父id，外键自连接:0一级评论

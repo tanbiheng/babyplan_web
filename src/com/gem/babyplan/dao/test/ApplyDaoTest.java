@@ -59,4 +59,14 @@ public class ApplyDaoTest {
 			System.out.println(apply+","+apply.getBeApplyParent().getParentId()+","+apply.getApplyParent().getParentId());
 		}
 	}
+	
+	@Test
+	public void getApplyByParentIdTest(){
+		int applyParentId = 5;
+		List<Apply> list = dao.getApplyByParentId(applyParentId);
+		for (Apply apply : list) {
+			System.out.println(apply+","+apply.getBeApplyParent().getParentId()+","+apply.getApplyParent().getParentId());
+		}
+	}
+	
 }
