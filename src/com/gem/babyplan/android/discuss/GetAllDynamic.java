@@ -44,19 +44,24 @@ public class GetAllDynamic {
 		
 		for (Dynamic dynamic : dynamics) {
 			int dynamicId = dynamic.getDynamicId();
+			System.out.println(dynamicId);
 			TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+			discusses.clear();
 			discusses = discussService.convertMapToList(discussesMap);
+			for (Discuss discuss : discusses) {
+				System.out.println(discuss);
+			}
 			dynamic_discuss_Map.put(dynamicId, discusses);
 		}
 		
-		for(Map.Entry<Integer, List<Discuss>> dynamic_discuss: dynamic_discuss_Map.entrySet()){
-			int dynamicId1 = dynamic_discuss.getKey();
-			System.out.println(dynamicId1);
-			List<Discuss> discusses2 = dynamic_discuss.getValue();
-			for (Discuss discuss : discusses2) {
-				System.out.println(discuss);
-			}
-		}
+//		for(Map.Entry<Integer, List<Discuss>> dynamic_discuss: dynamic_discuss_Map.entrySet()){
+//			int dynamicId1 = dynamic_discuss.getKey();
+//			System.out.println(dynamicId1);
+//			List<Discuss> discusses2 = dynamic_discuss.getValue();
+//			for (Discuss discuss : discusses2) {
+//				System.out.println(discuss);
+//			}
+//		}
 		
 	}
 }

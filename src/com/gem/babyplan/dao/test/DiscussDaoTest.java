@@ -51,7 +51,7 @@ public class DiscussDaoTest {
 	// 查询所有评论
 	@Test
 	public void selectAllTest() {
-		int dynamicId = 4;
+		int dynamicId = 1;
 		TreeMap<Integer, List<Discuss>> map = dao.getAllSortedDiscuss(dynamicId);
 		
 		for(Map.Entry<Integer, List<Discuss>> entry :  map.entrySet()){

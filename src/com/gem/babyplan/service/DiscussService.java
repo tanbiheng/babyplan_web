@@ -29,8 +29,9 @@ public class DiscussService {
 	}
 	
 	// 返回map转换后的评论list集合--> 可打包成json给安卓端使用
-	public List<Discuss> convertMapToList(TreeMap<Integer, List<Discuss>> map){
-		getConvertList(map, null);
+	public List<Discuss> convertMapToList(TreeMap<Integer, List<Discuss>> map)
+	{
+		getConvertList(map, 0);
 		return convertList;
 	}
 
@@ -44,7 +45,7 @@ public class DiscussService {
 				if (discuss.getIsLast() != 0) {
 					getConvertList(map, discussId);
 				} else {
-					break;
+					continue;
 				}
 			}
 		}
