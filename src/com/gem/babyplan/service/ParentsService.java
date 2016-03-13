@@ -2,15 +2,24 @@ package com.gem.babyplan.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.gem.babyplan.dao.ParentDao;
 import com.gem.babyplan.dao.StudentDao;
+import com.gem.babyplan.entity.Discuss;
+import com.gem.babyplan.entity.Dynamic;
 import com.gem.babyplan.entity.Parent;
 import com.gem.babyplan.entity.Student;
 
 public class ParentsService {
 	private ParentDao pDao = new ParentDao();
-	StudentDao sDao = new StudentDao();
+	private StudentDao sDao = new StudentDao();
+	
+	private ApplyService applyService = new ApplyService();
+	private DynamicService dynamicService = new DynamicService();
+	private DiscussService discussService = new DiscussService();
+	
 
 	// 展示页面,由于需要宝宝的信息，需要把宝宝找出来，发送出去
 	public List<Parent> getAllParents() {
@@ -47,4 +56,34 @@ public class ParentsService {
 	public Parent getParentByTelephone(String telephone) {
 		return pDao.getParentByTelephone(telephone);
 	}
+	
+	// 根据家长id的到家长及家长好友的所有动态和评论
+	public Map<Integer, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId){
+		Map<Integer, List<Discuss>> dynamic_discuss_Map = new TreeMap<Integer, List<Discuss>>();//动态及对应评论的map
+		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
+		List<Discuss> discusses = new ArrayList<Discuss>();//根据父id查询到的评论map转换后的评论集合
+		Integer[] parentIds = new Integer[parents.size()+1];//家长圈也能显示自己的动态，所以要把家长自己加上去
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);//家长加家长所有好友的动态集合
+		
+		
+		for (int i = 0; i < parents.size(); i++) {
+			Parent parent = parents.get(i);
+			parentIds[i] = parent.getParentId();
+		}
+		parentIds[parents.size()] = applyParentId;
+		
+		for (Dynamic dynamic : dynamics) {
+			int dynamicId = dynamic.getDynamicId();
+//			System.out.println(dynamicId);
+			TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+			discusses.clear();
+			discusses = discussService.convertMapToList(discussesMap);
+//			for (Discuss discuss : discusses) {
+//				System.out.println(discuss);
+//			}
+			dynamic_discuss_Map.put(dynamicId, discusses);
+		}
+		return dynamic_discuss_Map;
+	}
+	
 }

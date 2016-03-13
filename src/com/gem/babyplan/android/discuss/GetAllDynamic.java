@@ -21,8 +21,6 @@ public class GetAllDynamic {
 	
 	public static void main(String[] args) {
 		int applyParentId = 5;
-//		Map<Integer, List<Dynamic>> dynamicsMap = new TreeMap<Integer, List<Dynamic>>();
-//		List<Dynamic> dynamics = new ArrayList<Dynamic>();
 		
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);
 		
@@ -34,7 +32,6 @@ public class GetAllDynamic {
 		}
 		parentIds[parents.size()] = applyParentId;
 		
-//		System.out.println(Arrays.toString(parentIds));
 		
 		List<Discuss> discusses = new ArrayList<Discuss>();
 		Map<Integer, List<Discuss>> dynamic_discuss_Map = new TreeMap<Integer, List<Discuss>>();
@@ -44,13 +41,13 @@ public class GetAllDynamic {
 		
 		for (Dynamic dynamic : dynamics) {
 			int dynamicId = dynamic.getDynamicId();
-			System.out.println(dynamicId);
+//			System.out.println(dynamicId);
 			TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
 			discusses.clear();
 			discusses = discussService.convertMapToList(discussesMap);
-			for (Discuss discuss : discusses) {
-				System.out.println(discuss);
-			}
+//			for (Discuss discuss : discusses) {
+//				System.out.println(discuss);
+//			}
 			dynamic_discuss_Map.put(dynamicId, discusses);
 		}
 		
