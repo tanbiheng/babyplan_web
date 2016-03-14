@@ -46,8 +46,10 @@ public class DynamicDaoTest {
 	// 根据家长id得到动态
 	@Test
 	public void getDynamicByParentId(){
+		int curPage = 1;
+		int pageSize = 2;
 		Integer[] parentIds = {1,2,5,6};
-		List<Dynamic> list = dao.getDynamicByParentId(parentIds);
+		List<Dynamic> list = dao.getDynamicByParentId(parentIds,curPage,pageSize);
 		for (Dynamic dynamic : list) {
 			System.out.println(dynamic+","+dynamic.getParent().getParentId());
 		}

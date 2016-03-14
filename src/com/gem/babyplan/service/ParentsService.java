@@ -57,7 +57,7 @@ public class ParentsService {
 	}
 
 	// 根据家长id的到家长及家长好友的所有动态和评论
-	public Map<Dynamic, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId) {
+	public Map<Dynamic, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId,int curPage,int pageSize) {
 
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
 
@@ -71,7 +71,7 @@ public class ParentsService {
 
 		TreeMap<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();//动态及对应评论的map
 
-		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);//家长加家长所有好友的动态集合
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds,curPage,pageSize);//家长加家长所有好友的动态集合
 
 		for (Dynamic dynamic : dynamics) {
 			DiscussService discussService = new DiscussService();
@@ -123,7 +123,7 @@ public class ParentsService {
 		return dynamic_discuss_Map;
 	}
 
-	public List<Dynamic> getDynamicByParentId(int applyParentId) {
+	public List<Dynamic> getDynamicByParentId(int applyParentId,int curPage,int pageSize) {
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);
 
 		Integer[] parentIds = new Integer[parents.size() + 1];
@@ -139,7 +139,7 @@ public class ParentsService {
 		List<Discuss> discusses = new ArrayList<Discuss>();
 		Map<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();
 
-		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds,curPage,pageSize);
 		
 		return dynamics;
 	}

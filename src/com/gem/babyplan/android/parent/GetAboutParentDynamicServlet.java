@@ -28,8 +28,10 @@ public class GetAboutParentDynamicServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String parentId = request.getParameter("parentId");
+		String curPage = request.getParameter("curPage");
+		String pageSize = request.getParameter("pageSize");
 		ParentsService parentsService = new ParentsService();
-		Map<Dynamic, List<Discuss>> dynamic_Discuss = parentsService.getAboutParentDynamic_DiscussByParentId(Integer.parseInt(parentId));
+		Map<Dynamic, List<Discuss>> dynamic_Discuss = parentsService.getAboutParentDynamic_DiscussByParentId(Integer.parseInt(parentId),Integer.parseInt(curPage),Integer.parseInt(pageSize));
 //		List<Dynamic> dynamics = parentsService.getDynamicByParentId(Integer.parseInt(parentId));
 		
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().disableHtmlEscaping().setDateFormat("yyyy-MM-dd HH:mm:ss").create();

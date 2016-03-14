@@ -154,7 +154,7 @@ public class DynamicDao {
 	
 	
 	// 根据家长id的的到所有动态
-	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
+	public List<Dynamic> getDynamicByParentId(Integer[] parentIds,int curPage,int pageSize) {
 		Connection conn = null;
 		PreparedStatement prep = null;
 		ResultSet rs = null;
@@ -172,9 +172,10 @@ public class DynamicDao {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic where parentId in "+parentIdString+" order by dynamicPublishTime desc";
+			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic where parentId in "+parentIdString+" order by dynamicPublishTime desc limit ?,?";
 			prep = conn.prepareStatement(sql);
-
+			prep.setInt(1, (curPage - 1) * pageSize);
+			prep.setInt(2, pageSize);
 			rs = prep.executeQuery();
 			while (rs.next()) {
 				Dynamic dynamic = new Dynamic();

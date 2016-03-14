@@ -22,6 +22,8 @@ public class GetAllDynamic {
 		DynamicService dynamicService = new DynamicService();
 
 		int applyParentId = 5;
+		int curPage = 1 ;
+		int pageSize = 2;
 
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);
 
@@ -40,7 +42,7 @@ public class GetAllDynamic {
 		// TreeMap<Dynamic, List<Discuss>>();
 		TreeMap<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();
 
-		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds,curPage,pageSize);
 
 		for (Dynamic dynamic : dynamics) {
 			DiscussService discussService = new DiscussService();

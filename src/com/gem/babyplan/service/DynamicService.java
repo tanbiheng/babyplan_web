@@ -24,8 +24,8 @@ public class DynamicService {
 	}
 	
 	// 根据家长id的的到所有动态
-	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
-		return dao.getDynamicByParentId(parentIds);
+	public List<Dynamic> getDynamicByParentId(Integer[] parentIds,int curPage,int pageSize) {
+		return dao.getDynamicByParentId(parentIds,curPage,pageSize);
 	}
 	
 	// 根据动态主键得到动态
