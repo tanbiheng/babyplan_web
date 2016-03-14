@@ -113,6 +113,45 @@ public class DynamicDao {
 		return list;
 	}
 	
+	// 根据动态主键得到动态
+	public Dynamic getDynamicByDynamicId(Integer dynamicId) {
+		Connection conn = null;
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+		Dynamic dynamic = null;
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select dynamicId,parentId,dynamicText,dynamicFile,dynamicPublishTime from dynamic where dynamicId = ? ";
+			prep = conn.prepareStatement(sql);
+			prep.setInt(1, dynamicId);
+			rs = prep.executeQuery();
+			ParentDao parentDao = new ParentDao();
+			while (rs.next()) {
+				dynamic = new Dynamic();
+				Parent parent = parentDao.getParentByParentId(rs.getInt("parentId"));
+//				parent.setParentId(rs.getInt("parentId"));
+				
+				dynamic.setDynamicId(rs.getInt("dynamicId"));
+				dynamic.setParent(parent);
+				dynamic.setDynamicText(rs.getString("dynamicText"));
+				dynamic.setDynamicFile(rs.getString("dynamicFile"));
+				dynamic.setDynamicPublishTime(rs.getTimestamp("dynamicPublishTime"));
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DynamicRuntimeException("动态查询所有方法出错");
+		} finally {
+			DBConnection.release(conn, prep, rs);
+		}
+		return dynamic;
+	}
+	
 	
 	// 根据家长id的的到所有动态
 	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
@@ -129,7 +168,7 @@ public class DynamicDao {
 		
 		String parentIdString = "("+sb.toString().substring(0, sb.toString().length()-1)+")";
 		
-		
+		ParentDao parentDao = new ParentDao();
 		
 		try {
 			conn = DBConnection.getConnection();
@@ -139,8 +178,8 @@ public class DynamicDao {
 			rs = prep.executeQuery();
 			while (rs.next()) {
 				Dynamic dynamic = new Dynamic();
-				Parent parent = new Parent();
-				parent.setParentId(rs.getInt("parentId"));
+				Parent parent = parentDao.getParentByParentId(rs.getInt("parentId"));
+//				parent.setParentId(rs.getInt("parentId"));
 				
 				dynamic.setDynamicId(rs.getInt("dynamicId"));
 				dynamic.setParent(parent);

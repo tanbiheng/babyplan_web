@@ -52,4 +52,12 @@ public class DynamicDaoTest {
 			System.out.println(dynamic+","+dynamic.getParent().getParentId());
 		}
 	}
+	
+	//根据动态主键得到动态
+	@Test
+	public void getDynamicByDynamicIdTest(){
+		int dynamicId = 1;
+		Dynamic dynamic = dao.getDynamicByDynamicId(dynamicId);
+		System.out.println(dynamic);
+	}
 }

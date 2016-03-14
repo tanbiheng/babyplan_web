@@ -27,4 +27,10 @@ public class DynamicService {
 	public List<Dynamic> getDynamicByParentId(Integer[] parentIds) {
 		return dao.getDynamicByParentId(parentIds);
 	}
+	
+	// 根据动态主键得到动态
+	public Dynamic getDynamicByDynamicId(Integer dynamicId) {
+		return dao.getDynamicByDynamicId(dynamicId);
+	}
+	
 }

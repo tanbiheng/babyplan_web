@@ -15,11 +15,10 @@ import com.gem.babyplan.entity.Student;
 public class ParentsService {
 	private ParentDao pDao = new ParentDao();
 	private StudentDao sDao = new StudentDao();
-	
+
 	private ApplyService applyService = new ApplyService();
 	private DynamicService dynamicService = new DynamicService();
-	private DiscussService discussService = new DiscussService();
-	
+//	private DiscussService discussService = new DiscussService();
 
 	// 展示页面,由于需要宝宝的信息，需要把宝宝找出来，发送出去
 	public List<Parent> getAllParents() {
@@ -56,34 +55,93 @@ public class ParentsService {
 	public Parent getParentByTelephone(String telephone) {
 		return pDao.getParentByTelephone(telephone);
 	}
-	
+
 	// 根据家长id的到家长及家长好友的所有动态和评论
-	public Map<Integer, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId){
-		Map<Integer, List<Discuss>> dynamic_discuss_Map = new TreeMap<Integer, List<Discuss>>();//动态及对应评论的map
+	public Map<Dynamic, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId) {
+
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
-		List<Discuss> discusses = new ArrayList<Discuss>();//根据父id查询到的评论map转换后的评论集合
-		Integer[] parentIds = new Integer[parents.size()+1];//家长圈也能显示自己的动态，所以要把家长自己加上去
-		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);//家长加家长所有好友的动态集合
-		
-		
+
+		Integer[] parentIds = new Integer[parents.size() + 1];//家长圈也能显示自己的动态，所以要把家长自己加上去
+
 		for (int i = 0; i < parents.size(); i++) {
 			Parent parent = parents.get(i);
 			parentIds[i] = parent.getParentId();
 		}
 		parentIds[parents.size()] = applyParentId;
-		
+
+		TreeMap<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();//动态及对应评论的map
+
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);//家长加家长所有好友的动态集合
+
 		for (Dynamic dynamic : dynamics) {
+			DiscussService discussService = new DiscussService();
 			int dynamicId = dynamic.getDynamicId();
-//			System.out.println(dynamicId);
+			Dynamic dynamicKey = dynamicService.getDynamicByDynamicId(dynamicId);
 			TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+			List<Discuss> discusses = new ArrayList<Discuss>();
 			discusses.clear();
-			discusses = discussService.convertMapToList(discussesMap);
-//			for (Discuss discuss : discusses) {
-//				System.out.println(discuss);
-//			}
-			dynamic_discuss_Map.put(dynamicId, discusses);
+			List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
+
+			discusses.addAll(discusses2);
+
+			dynamic_discuss_Map.put(dynamicKey, discusses);
 		}
+
+		// List<Parent> parents =
+		// applyService.getParentFriendByParentId(applyParentId);
+		// Integer[] parentIds = new
+		// Integer[parents.size()+1];
+		//
+		// for (int i = 0; i < parents.size(); i++) {
+		// Parent parent = parents.get(i);
+		// parentIds[i] = parent.getParentId();
+		// }
+		// parentIds[parents.size()] = applyParentId;
+		//
+		// List<Dynamic> dynamics =
+		// dynamicService.getDynamicByParentId(parentIds);
+		//
+		// Dynamic dynamicKey = null;
+		// Map<Dynamic, List<Discuss>> dynamic_discuss_Map = new
+		// TreeMap<Dynamic, List<Discuss>>();
+		// List<Discuss> discusses = new
+		// ArrayList<Discuss>();
+		//
+		// for (Dynamic dynamic : dynamics) {
+		// int dynamicId = dynamic.getDynamicId();
+		//// System.out.println(dynamicId);
+		// TreeMap<Integer, List<Discuss>> discussesMap =
+		// discussService.getAllSortedDiscuss(dynamicId);
+		// discusses.clear();
+		// discusses = discussService.convertMapToList(discussesMap);
+		//// for (Discuss discuss : discusses) {
+		//// System.out.println(discuss);
+		//// }
+		// dynamicKey = dynamicService.getDynamicByDynamicId(dynamicId);
+		// dynamic_discuss_Map.put(dynamicKey, discusses);
+		// }
 		return dynamic_discuss_Map;
 	}
-	
+
+	public List<Dynamic> getDynamicByParentId(int applyParentId) {
+		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);
+
+		Integer[] parentIds = new Integer[parents.size() + 1];
+
+		for (int i = 0; i < parents.size(); i++) {
+			Parent parent = parents.get(i);
+			parentIds[i] = parent.getParentId();
+		}
+		parentIds[parents.size()] = applyParentId;
+
+		Dynamic dynamicKey = null;
+
+		List<Discuss> discusses = new ArrayList<Discuss>();
+		Map<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();
+
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds);
+		
+		return dynamics;
+	}
+
 }

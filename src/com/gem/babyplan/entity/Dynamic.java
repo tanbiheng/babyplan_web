@@ -3,7 +3,7 @@ package com.gem.babyplan.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Dynamic implements Serializable {
+public class Dynamic implements Serializable , Comparable<Dynamic> {
 	private Integer dynamicId;//动态id，主键
 	
 	private Parent parent;//家长
@@ -43,9 +43,22 @@ public class Dynamic implements Serializable {
 	public void setDynamicPublishTime(Date dynamicPublishTime) {
 		this.dynamicPublishTime = dynamicPublishTime;
 	}
+	
+	
 	@Override
 	public String toString() {
 		return "Dynamic [dynamicId=" + dynamicId + ", parent=" + parent + ", dynamicText=" + dynamicText
 				+ ", dynamicFile=" + dynamicFile + ", dynamicPublishTime=" + dynamicPublishTime + "]";
+	}
+	
+	@Override
+	public int compareTo(Dynamic o) {
+		// TODO Auto-generated method stub
+		if(dynamicPublishTime.getTime()>o.getDynamicPublishTime().getTime()){
+			return -1;
+		}else if(dynamicPublishTime.getTime()<o.getDynamicPublishTime().getTime()){
+			return 1;
+		}
+		return 0 ;
 	}
 }

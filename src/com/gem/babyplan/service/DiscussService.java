@@ -10,13 +10,12 @@ import com.gem.babyplan.entity.Discuss;
 public class DiscussService {
 	private DiscussDao dao = new DiscussDao();
 	private Discuss discuss ;
-	private List<Discuss> convertList = new ArrayList<Discuss>();
+	List<Discuss> convertList = new ArrayList<Discuss>();
 	
 	// 插入
 	public void save(Discuss discuss) {
 		dao.save(discuss);
 	}
-	
 	
 	// 删除,批量删除
 	public void delete(Integer dynamicId,Integer discussId) {
