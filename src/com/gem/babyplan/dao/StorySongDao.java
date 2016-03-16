@@ -369,5 +369,54 @@ public class StorySongDao
 		
 	}
 	
+	//返回所有故事或者儿歌的对象,按类型分对象
+		public List<StorySong> getAllStorySongByType (int type)
+		{
+			Connection conn=null;
+			PreparedStatement pStatement=null;
+			ResultSet rSet =null;
+			List<StorySong> list =null;
+			try {
+				conn=DBConnection.getConnection();
+				String sql ="select ssId,ssType,ssName,ssThumbnail,ssURL,ssBrief from storysong where ssType =?";
+				pStatement =conn.prepareStatement(sql);
+				pStatement.setInt(1, type);
+				rSet=pStatement.executeQuery();
+				StorySong ss =null;
+				list =new ArrayList<>();
+		
+				while(rSet.next())
+				{
+					ss=new StorySong();
+					ss.setSsId(rSet.getInt("ssId"));
+					ss.setSsName(rSet.getString("ssName"));
+					ss.setSsThumbnail(rSet.getString("ssThumbnail"));
+					ss.setSsType(rSet.getInt("ssType"));
+					ss.setSsURL(rSet.getString("ssURL"));	
+					ss.setSsBrief(rSet.getString("ssBrief"));
+					list.add(ss);	
+				}
+				
+				
+			} catch (ClassNotFoundException e) 
+			{
+				e.printStackTrace();
+				throw new StorySongRunTimeException("故事儿歌表dao层出错");
+			} catch (SQLException e) 
+			{
+				e.printStackTrace();
+				throw new StorySongRunTimeException("故事儿歌表dao层出错");
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+				throw new StorySongRunTimeException("故事儿歌表dao层出错");
+			}
+			finally
+			{
+				DBConnection.release(conn, pStatement,rSet);
+			}
+			return list;
+			
+		}
 
 }
