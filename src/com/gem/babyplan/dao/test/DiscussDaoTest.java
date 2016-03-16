@@ -79,4 +79,14 @@ public class DiscussDaoTest {
 			System.out.println(discuss);
 		}
 	}
+	
+	@Test
+	public void getDiscussByDynamicIdTest(){
+		int dynamicId = 5;
+		List<Discuss> list = dao.getDiscussByDynamicId(dynamicId);
+		System.out.println(list);
+//		for (Discuss discuss : list) {
+//			System.out.println(discuss);
+//		}
+	}
 }

@@ -30,8 +30,11 @@ public class DiscussService {
 	// 返回map转换后的评论list集合--> 可打包成json给安卓端使用
 	public List<Discuss> convertMapToList(TreeMap<Integer, List<Discuss>> map)
 	{
-		getConvertList(map, 0);
-		return convertList;
+		if(map!=null){
+			getConvertList(map, 0);
+			return convertList;
+		}
+		return null;
 	}
 
 	// 把map转换成list
@@ -55,4 +58,8 @@ public class DiscussService {
 		return dao.getDiscussByDiscussId(discussId);
 	}
 	
+	// 根据动态id得到评论
+	public List<Discuss> getDiscussByDynamicId(Integer dynamicId) {
+		return dao.getDiscussByDynamicId(dynamicId);
+	}
 }
