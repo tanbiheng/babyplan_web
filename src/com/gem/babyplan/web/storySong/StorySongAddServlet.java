@@ -33,11 +33,14 @@ public class StorySongAddServlet extends HttpServlet
 		
 		Part part=request.getPart("ssFile");
 		String fileName=part.getSubmittedFileName();
+		//得到图片的part
+		Part part2 = request.getPart("ssPic");
+		String fileName2=part2.getSubmittedFileName();
 		//新建一个对象，储存数据，调用service层，储存数据
 		StorySong ss = new StorySong();
 		ss.setSsBrief(ssBrief);
 		ss.setSsName(ssName);
-		ss.setSsThumbnail("222");
+		ss.setSsThumbnail(fileName2);
 		int type =Integer.parseInt(ssType);
 		ss.setSsType(type);
 		ss.setSsURL(fileName);
@@ -46,11 +49,13 @@ public class StorySongAddServlet extends HttpServlet
 		
 		//写到路径中去,缺点是每次发布，就把原来的给清空了
 		//判断是否存在那里
-		if (type==0) {
-			
+		if (type==0) 
+		{	
 			part.write(ConstantBabyPlan.SONG_FILE+fileName);
+			part2.write(ConstantBabyPlan.SONG_FILE+"/default_nail/"+fileName2);
 		}else {
 			part.write(ConstantBabyPlan.STORY_FILE+fileName);
+			part2.write(ConstantBabyPlan.STORY_FILE+"/default_nail/"+fileName2);
 			
 		}
 		//重新连接

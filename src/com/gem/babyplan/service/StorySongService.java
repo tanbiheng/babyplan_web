@@ -22,10 +22,10 @@ public class StorySongService
 		//对类型进行判断,0是儿歌，1是故事
 		if (ss.getSsType()==0)
 		{
-		ss.setSsThumbnail(ConstantBabyPlan.SONG_URL+"default_nail/erge.jpg");	
+		ss.setSsThumbnail(ConstantBabyPlan.SONG_URL+"default_nail/"+ss.getSsThumbnail());	
 		ss.setSsURL(ConstantBabyPlan.SONG_URL+ss.getSsURL());
 		}else {
-			ss.setSsThumbnail(ConstantBabyPlan.STORY_URL+"default_nail/story.jpg");	
+			ss.setSsThumbnail(ConstantBabyPlan.STORY_URL+"default_nail/"+ss.getSsThumbnail());	
 			ss.setSsURL(ConstantBabyPlan.STORY_URL+ss.getSsURL());
 		}
 		ssDao.addStorySong(ss);
@@ -95,5 +95,10 @@ public class StorySongService
 	public List<StorySong> getStorySongByType (int type)
 	{
 		return ssDao.getAllStorySongByType(type);
+	}
+	//分页,实现返回故事或者儿歌，按照类型
+	public List<StorySong> getPagedStorySongByType (int currentPage,int pageSize,int type)
+	{
+		return ssDao.getPageStorySong(currentPage, pageSize, type);
 	}
 }

@@ -10,7 +10,8 @@
 </head>
 <script src="/babyplan/easyui/jquery-1.11.1.js"></script>
 <script type="text/javascript">
-function ensure(){
+function ensure()
+{
 	var oForm=document.getElementsByName("frmAction")[0];
 	oForm.action="/babyplan/StorySongAddServlet";
 	oForm.submit();
@@ -42,8 +43,12 @@ function ensure(){
 			</td>
 		</tr>
 		<tr height="35"  bgcolor='#ffffff'>
-			<td align='right'>选择文件</td>
+			<td align='right'>视频文件</td>
 			<td><input name="ssFile" type="file" value="选择文件" ></td>
+		</tr>
+		<tr height="35"  bgcolor='#ffffff'>
+			<td align='right'>缩略图文件</td>
+			<td><input name="ssPic" type="file" value="选择缩略图文件" ></td>
 		</tr>
 		<tr >
 		   	<td  height=35 colspan="2" >
