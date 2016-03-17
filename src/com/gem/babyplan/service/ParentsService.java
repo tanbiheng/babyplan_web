@@ -56,7 +56,7 @@ public class ParentsService {
 		return pDao.getParentByTelephone(telephone);
 	}
 
-	// 根据家长id的到家长及家长好友的所有动态和评论,分页
+	// 根据家长id得到家长及家长好友的所有动态和评论,分页
 	public Map<Dynamic, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId,int curPage,int pageSize) {
 
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
