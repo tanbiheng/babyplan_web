@@ -280,4 +280,60 @@ public class DiscussDao {
 		}
 		return list;
 	}
+	
+	
+	// 根据动态id得到评论
+		public List<Discuss> getDiscussByDynamicId(Integer dynamicId) {
+			Connection conn = null;
+			PreparedStatement prep = null;
+			ResultSet rs = null;
+			Discuss discuss = null;
+			List<Discuss> list = new ArrayList<Discuss>();
+			try {
+				conn = DBConnection.getConnection();
+
+				String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ?";
+				prep = conn.prepareStatement(sql);
+				prep.setInt(1, dynamicId);
+				rs = prep.executeQuery();
+
+				Dynamic dynamic = null;
+				Parent parent = null;
+				Discuss discuss1 = null;
+
+				while (rs.next()) {
+					discuss = new Discuss();
+					dynamic = new Dynamic();
+					dynamic.setDynamicId(rs.getInt("dynamicId"));
+					parent = new Parent();
+					parent.setParentId(rs.getInt("parentId"));
+					discuss1 = new Discuss();
+					discuss1.setDiscussId(rs.getInt("discussSuperId"));
+
+					discuss.setDiscussId(rs.getInt("discussId"));
+					discuss.setDynamic(dynamic);
+					discuss.setParent(parent);
+					discuss.setDiscuss(discuss1);
+					discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
+					discuss.setDiscussText(rs.getString("discussText"));
+					discuss.setIsLast(rs.getInt("isLast"));
+
+					list.add(discuss);
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} finally {
+				DBConnection.release(conn, prep, rs);
+			}
+			return list;
+		}
+	
+	
 }

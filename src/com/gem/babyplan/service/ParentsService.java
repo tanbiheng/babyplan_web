@@ -56,7 +56,7 @@ public class ParentsService {
 		return pDao.getParentByTelephone(telephone);
 	}
 
-	// 根据家长id的到家长及家长好友的所有动态和评论
+	// 根据家长id的到家长及家长好友的所有动态和评论,分页
 	public Map<Dynamic, List<Discuss>> getAboutParentDynamic_DiscussByParentId(int applyParentId,int curPage,int pageSize) {
 
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
@@ -77,12 +77,21 @@ public class ParentsService {
 			DiscussService discussService = new DiscussService();
 			int dynamicId = dynamic.getDynamicId();
 			Dynamic dynamicKey = dynamicService.getDynamicByDynamicId(dynamicId);
-			TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+			List<Discuss> judeDiscusses = discussService.getDiscussByDynamicId(dynamicId);
 			List<Discuss> discusses = new ArrayList<Discuss>();
-			discusses.clear();
-			List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
-
-			discusses.addAll(discusses2);
+			if(judeDiscusses!=null&&judeDiscusses.size()!=0){
+				TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+				discusses.clear();
+				List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
+				discusses.addAll(discusses2);
+			}else{
+				discusses=null;
+			}
+//			List<Discuss> discusses = new ArrayList<Discuss>();
+//			discusses.clear();
+//			List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
+//
+//			discusses.addAll(discusses2);
 
 			dynamic_discuss_Map.put(dynamicKey, discusses);
 		}
