@@ -1,12 +1,16 @@
 package com.gem.babyplan.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.gem.babyplan.dao.CartoonDao;
+import com.gem.babyplan.dao.StationDao;
 import com.gem.babyplan.entity.Cartoon;
+import com.gem.babyplan.entity.Station;
 //我修改的 2016年2月26日
 public class CartoonService {
 	private CartoonDao dao = new CartoonDao();
+	private StationDao sDao = new StationDao();
 	
 	// 插入
 	public void save(Cartoon cartoon) 
@@ -21,7 +25,8 @@ public class CartoonService {
 	}
 	
 	// 修改
-	public void update(Cartoon cartoon) {
+	public void update(Cartoon cartoon) 
+	{
 		dao.update(cartoon);
 	}
 	
@@ -32,7 +37,8 @@ public class CartoonService {
 	}
 	
 	// 动画片名模糊查询
-	public List<Cartoon> getCartoonByCartoonName(String cartoonName) {
+	public List<Cartoon> getCartoonByCartoonName(String cartoonName) 
+	{
 		return dao.getCartoonByCartoonName(cartoonName);
 	}
 	
@@ -50,4 +56,20 @@ public class CartoonService {
 	{
 		return dao.getCartoonByCartoonId(id);
 	}
+	
+	//分页查询所有的卡通，填充数据，传给安卓端
+	public HashMap<Cartoon,List<Station>> getAndroidPagedCartoon(int curPage, int pageSize) 
+	{
+		HashMap<Cartoon,List<Station>> hashMap = new HashMap<>();
+		List<Cartoon> list = dao.getPagedCartoon(curPage, pageSize);
+		for (Cartoon cartoon : list) 
+		{
+			//根据卡通id得到所有的集数对象
+			List<Station> list2=sDao.getAllStationOfCartoon(cartoon.getCartoonId());
+			hashMap.put(cartoon, list2);
+			
+		}
+		return hashMap;
+	}
+	
 }
