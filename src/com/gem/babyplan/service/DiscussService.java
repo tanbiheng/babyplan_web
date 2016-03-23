@@ -22,6 +22,11 @@ public class DiscussService {
 		dao.delete(dynamicId, discussId);
 	}
 	
+	// 修改
+	public void update(Discuss discuss) {
+		dao.update(discuss);
+	}
+	
 	// 根据动态id，得到对应动态评论的map集合
 	public TreeMap<Integer, List<Discuss>> getAllSortedDiscuss(Integer dynamicId){
 		return dao.getAllSortedDiscuss(dynamicId);

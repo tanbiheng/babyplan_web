@@ -38,10 +38,11 @@ public class DiscussDao {
 			// 4.设置？的值
 			prep.setInt(1, discuss.getDynamic().getDynamicId());
 			prep.setInt(2, discuss.getParent().getParentId());
-			Integer discussSuperId = discuss.getDiscuss().getDiscussId();
-			if (discussSuperId == null) {
+			
+			if (discuss.getDiscuss() == null) {
 				prep.setNull(3, Types.INTEGER);
 			} else {
+				Integer discussSuperId = discuss.getDiscuss().getDiscussId();
 				prep.setInt(3, discussSuperId);
 			}
 			prep.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
@@ -107,6 +108,50 @@ public class DiscussDao {
 		return discusses;
 	}
 
+	// 修改
+	public void update(Discuss discuss) {
+		// 1.连数据库
+		Connection conn = null;
+		// 3.获得PreparedStatement对象
+		PreparedStatement prep = null;
+
+		try {
+			conn = DBConnection.getConnection();
+			//update discuss set dynamicId=?,parentId=?,discussSuperId=?,discussPublishTime=?,discussText=?,isLast=? where discussId = ?
+			// 2.sql语句
+			String sql = "update discuss set dynamicId=?,parentId=?,discussSuperId=?,discussPublishTime=?,discussText=?,isLast=? where discussId = ?";
+			prep = conn.prepareStatement(sql);
+			// 4.设置？的值
+			prep.setInt(1, discuss.getDynamic().getDynamicId());
+			prep.setInt(2, discuss.getParent().getParentId());
+			
+			if (discuss.getDiscuss() == null) {
+				prep.setNull(3, Types.INTEGER);
+			} else {
+				Integer discussSuperId = discuss.getDiscuss().getDiscussId();
+				prep.setInt(3, discussSuperId);
+			}
+			prep.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			prep.setString(5, discuss.getDiscussText());
+			prep.setInt(6, discuss.getIsLast());
+			prep.setInt(7, discuss.getDiscussId());
+			// 5.执行sql语句
+			prep.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论插入方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论插入方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论插入方法出错");
+		} finally {
+			// 6.关闭资源
+			DBConnection.release(conn, prep);
+		}
+	}
+	
 	// 查询所有评论
 	public void getSortDiscuss(Integer dynamicId, Integer discussSuperId) {
 		Connection conn = null;

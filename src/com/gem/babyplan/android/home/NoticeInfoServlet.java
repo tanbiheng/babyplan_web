@@ -12,23 +12,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gem.babyplan.entity.Classes;
-import com.gem.babyplan.entity.Homework;
+import com.gem.babyplan.entity.Notice;
 import com.gem.babyplan.entity.Parent;
 import com.gem.babyplan.entity.Student;
 import com.gem.babyplan.service.ClassesService;
-import com.gem.babyplan.service.HomeworkService;
+import com.gem.babyplan.service.NoticeService;
 import com.gem.babyplan.service.StudentService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-
-@WebServlet("/HomeworkInfoServlet")
-public class HomeworkInfoServlet extends HttpServlet {
+/**
+ * Servlet implementation class HomeworkInfoServlet
+ */
+@WebServlet("/NoticeInfoServlet")
+public class NoticeInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public NoticeInfoServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("utf-8");
@@ -44,24 +55,21 @@ public class HomeworkInfoServlet extends HttpServlet {
 		
 		StudentService studentService = new StudentService();
 		Student student2 = studentService.getStudentByNum(studentNumber);
-		
+		System.out.println("student:"+student2);
 		Classes classes=student2.getClasses();
 		String classNumber=classes.getClassNumber();
-		ClassesService classesService=new ClassesService();
-		//Classes classes2=classesService.getClassesByClassNumber(classNumber);
 		
-		HomeworkService homeworkService=new HomeworkService();
-		List<Homework> homeworks=homeworkService.getHomeworkByClassNumber(classNumber);
-		System.out.println(homeworks);
-		
-		String hwString=null;
+		NoticeService noticeService=new NoticeService();
+		List<Notice> notices=noticeService.getNoticeByClassNumber(classNumber);
+		System.out.println(notices);
+		String noticeString=null;
 		Gson gson2 = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		if(homeworks!=null){
-			hwString=gson2.toJson(homeworks);
+		if(notices!=null){
+			noticeString=gson2.toJson(notices);
 		}
-		System.out.println("解析后"+hwString);
+		System.out.println("解析后"+noticeString);
 		PrintWriter pWriter=response.getWriter();
-		pWriter.print(hwString);
+		pWriter.print(noticeString);
 		pWriter.flush();
 		if(pWriter!=null){
 			pWriter.close();
@@ -69,6 +77,9 @@ public class HomeworkInfoServlet extends HttpServlet {
 		
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);

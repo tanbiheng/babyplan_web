@@ -38,7 +38,7 @@ public class DiscussDaoTest {
 		dao.save(discuss);
 	}
 
-	Discuss discuss ;
+//	Discuss discuss ;
 	
 	// 刪除，批量刪除
 	@Test
@@ -46,6 +46,30 @@ public class DiscussDaoTest {
 		int discussId = 1;
 		int dynamicId = 1;
 		dao.delete(dynamicId,discussId);
+	}
+	
+	
+	// 修改
+	@Test
+	public void updateTest() throws ParseException {
+		Discuss discuss = new Discuss();
+
+		Dynamic dynamic = new Dynamic();
+		dynamic.setDynamicId(4);
+		Parent parent = new Parent();
+		parent.setParentId(2);
+		Discuss discuss1 = new Discuss();
+		discuss1.setDiscussId(null);
+
+		discuss.setDiscussId(30);
+		discuss.setDynamic(dynamic);
+		discuss.setParent(parent);
+		discuss.setDiscuss(discuss1);
+
+		discuss.setDiscussText("动态4的一级评论2--");
+		discuss.setIsLast(0);
+
+		dao.update(discuss);
 	}
 	
 	// 查询所有评论

@@ -33,6 +33,11 @@ public class ParentsService {
 		return list2;
 	}
 
+	// 修改家长信息
+	public void updateParent(Parent p) {
+		pDao.updateParent(p);
+	}
+	
 	// 分页查询
 	public List<Parent> getPagedParent(int curPage, int pageSize) {
 		List<Parent> list = pDao.getPageParent(curPage, pageSize);
