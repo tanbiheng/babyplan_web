@@ -35,4 +35,6 @@ public interface CartoonServiceInterface {
 	//分页查询所有的卡通，填充数据，传给安卓端
 	HashMap<Cartoon, List<Station>> getAndroidPagedCartoon(int curPage, int pageSize);
 
+	HashMap<Cartoon, List<Station>> getAndroidNameCartoon(String name);
+
 }
