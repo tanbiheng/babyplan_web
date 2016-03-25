@@ -40,7 +40,7 @@ public class GetAboutParentDynamicServlet extends HttpServlet {
 		if(dynamic_Discuss!=null){
 			dynamic_DiscussString = gson.toJson(dynamic_Discuss);
 		}
-		System.out.println(dynamic_DiscussString);
+//		System.out.println(dynamic_DiscussString);
 		
 		PrintWriter writer = response.getWriter();
 		writer.print(dynamic_DiscussString);

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,16 @@ public class DynamicDao {
 			prep = conn.prepareStatement(sql);
 			// 4.设置？的值
 			prep.setInt(1, dynamic.getParent().getParentId());
-			prep.setString(2, dynamic.getDynamicText());
-			prep.setString(3, dynamic.getDynamicFile());
+			if(dynamic.getDynamicText()==null){
+				prep.setNull(2, Types.VARCHAR);
+			}else{
+				prep.setString(2, dynamic.getDynamicText());
+			}
+			if(dynamic.getDynamicFile()==null){
+				prep.setNull(3, Types.VARCHAR);
+			}else{
+				prep.setString(3, dynamic.getDynamicFile()); 
+			}
 			prep.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 			// 5.执行sql语句
 			prep.executeUpdate();

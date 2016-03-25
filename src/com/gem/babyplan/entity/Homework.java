@@ -1,8 +1,9 @@
 package com.gem.babyplan.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Homework {
+public class Homework implements Serializable {
 	private int hwId;//作业id，主键
 	
 	private Classes classes;//班级
