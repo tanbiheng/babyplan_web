@@ -101,4 +101,10 @@ public class StorySongService
 	{
 		return ssDao.getPageStorySong(currentPage, pageSize, type);
 	}
+	//返回故事儿歌，根据名字
+	public StorySong getStorySongByName (String name)
+	{
+		
+		return ssDao.getStorySongByName(name);
+	}
 }

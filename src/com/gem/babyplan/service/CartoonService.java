@@ -118,4 +118,23 @@ public class CartoonService implements CartoonServiceInterface {
 		return hashMap;
 	}
 	
+	//这个，跟据名字，返回一部动画片
+	@Override
+	public HashMap<Cartoon,List<Station>> getAndroidNameCartoon(String name) 
+	{
+		HashMap<Cartoon,List<Station>> hashMap = new HashMap<>();
+		Cartoon cartoon = dao.getCartoonByName(name);
+		//判断一下，如果没有值的话，默认传过去第一部动画片
+		if(cartoon==null)
+		{
+		cartoon =dao.getCartoonByName("熊出没");	
+		}
+		//根据卡通id得到所有的集数对象
+		List<Station> list2=sDao.getAllStationOfCartoon(cartoon.getCartoonId());
+		hashMap.put(cartoon, list2);
+			
+		return hashMap;
+	}
+	
+	
 }
