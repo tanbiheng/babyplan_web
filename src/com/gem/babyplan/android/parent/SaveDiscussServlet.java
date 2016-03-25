@@ -30,7 +30,6 @@ public class SaveDiscussServlet extends HttpServlet {
 		
 		System.out.println(discussText);
 		
-		String superDiscuss = request.getParameter("superDiscuss");
 		String dynamicString = request.getParameter("dynamic");
 		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -38,23 +37,35 @@ public class SaveDiscussServlet extends HttpServlet {
 		Parent parent = gson.fromJson(parentString, type);
 		System.out.println(parent);
 		
-		Type type1 = new TypeToken<Discuss>(){}.getType();
-		Discuss discuss = gson.fromJson(superDiscuss, type1);
-		System.out.println(discuss);
+		
 		
 		Type type2 = new TypeToken<Dynamic>(){}.getType();
 		Dynamic dynamic = gson.fromJson(dynamicString, type2);
 		System.out.println(dynamic);
 		
-		discuss.setIsLast(1);
-		DiscussService discussService = new DiscussService();
-		discussService.update(discuss);
 		
+		String superDiscuss = request.getParameter("superDiscuss");
+		
+		DiscussService discussService = new DiscussService();
 		Discuss discuss2 = new Discuss();
+		
+		if(!superDiscuss.equals("")){
+			Type type1 = new TypeToken<Discuss>(){}.getType();
+			Discuss discuss = gson.fromJson(superDiscuss, type1);
+			System.out.println(discuss);
+			discuss.setIsLast(1);
+			
+			discussService.update(discuss);
+			discuss2.setDiscuss(discuss);
+		}else{
+			discuss2.setDiscuss(null);
+		}
+		
+		
 		discuss2.setDiscussText(discussText);
 		discuss2.setParent(parent);
 		discuss2.setIsLast(0);
-		discuss2.setDiscuss(discuss);
+		
 		discuss2.setDynamic(dynamic);
 		
 		discussService.save(discuss2);

@@ -192,6 +192,51 @@ public class PublicVideoDao {
 
 	}
 
+	//select * from publicvideo where publicTime=?
+	
+	// 根据日期得到所有公共视频
+	public List<PublicVideo> getPublicVideoByTime(String date) {
+		Connection conn = null;
+		PreparedStatement pStatement = null;
+		ResultSet rSet = null;
+		List<PublicVideo> list = null;
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select * from publicvideo where publicTime=?";
+			pStatement = conn.prepareStatement(sql);
+			pStatement.setString(1, date);
+			rSet = pStatement.executeQuery();
+			PublicVideo pv = null;
+			list = new ArrayList<PublicVideo>();
+
+			while (rSet.next()) {
+				pv = new PublicVideo();
+				pv.setPublicAddress(rSet.getInt("publicAddress"));
+				pv.setPublicDescribe(rSet.getString("publicDescribe"));
+				pv.setPublicId(rSet.getInt("publicId"));
+				pv.setPublicThumbnail(rSet.getString("publicThumbnail"));
+				pv.setPublicTime(rSet.getTimestamp("publicTime"));
+				pv.setPublicVideoURL(rSet.getString("publicVideoURL"));
+
+				list.add(pv);
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new PublicVideoDaoRunTimeException("公共视频dao层出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new PublicVideoDaoRunTimeException("公共视频dao层出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new PublicVideoDaoRunTimeException("公共视频dao层出错");
+		} finally {
+			DBConnection.release(conn, pStatement, rSet);
+		}
+		return list;
+	}
+	
+	
 	// 实现公共视频的分页查询
 	public List<PublicVideo> getPagePublicVideo(int curPage, int pageSize) {
 		Connection conn = null;

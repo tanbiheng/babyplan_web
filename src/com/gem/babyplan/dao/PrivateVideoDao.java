@@ -2,7 +2,6 @@ package com.gem.babyplan.dao;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -216,6 +215,52 @@ public class PrivateVideoDao {
 		}
 		return list;
 
+	}
+
+	// 根据班级号和日期得到所有班级视频视频
+	public List<PrivateVideo> getPrivateVideoByClassNumberAndTime(String classNumber, String date) {
+		Connection conn = null;
+		PreparedStatement pStatement = null;
+		ResultSet rSet = null;
+		List<PrivateVideo> list = null;
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select * from privatevideo where classNumber=? and privateTime between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
+			pStatement = conn.prepareStatement(sql);
+			pStatement.setString(1, classNumber);
+			rSet = pStatement.executeQuery();
+			PrivateVideo pVideo = null;
+			list = new ArrayList<PrivateVideo>();
+			Classes c = null;
+			while (rSet.next()) {
+				pVideo = new PrivateVideo();
+				c = new Classes();
+				c.setClassNumber(rSet.getString("classNumber"));
+				pVideo.setClasses(c);
+				pVideo.setPrivateAddress(rSet.getInt("privateAddress"));
+				pVideo.setPrivateDescribe(rSet.getString("privateDescribe"));
+				pVideo.setPrivateId(rSet.getInt("privateId"));
+				pVideo.setPrivateThumbnail(rSet.getString("privateThumbnail"));
+				pVideo.setPrivateTime(rSet.getTimestamp("privateTime"));
+				pVideo.setPrivateVideoURL(rSet.getString("privateVideoURL"));
+				list.add(pVideo);
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new PrivateVideoDaoRunTimeException("班级视频表dao层出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new PrivateVideoDaoRunTimeException("班级视频表dao层出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new PrivateVideoDaoRunTimeException("班级视频表dao层出错");
+		}
+		// 将宝贵的连接资源确保关闭
+		finally {
+			DBConnection.release(conn, pStatement, rSet);
+		}
+		return list;
 	}
 
 	// 实现班级视频分页查询，按班级号

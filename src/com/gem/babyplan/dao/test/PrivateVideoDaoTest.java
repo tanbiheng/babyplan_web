@@ -104,6 +104,16 @@ public class PrivateVideoDaoTest
 			}
 		}
 		
+		@Test
+		public void getPrivateVideoByClassNumberAndTimeTest(){
+			String classNumber = "A03";
+			String date = "2016-03-23";
+			List<PrivateVideo> list =pv.getPrivateVideoByClassNumberAndTime(classNumber, date);
+			for (PrivateVideo privateVideo : list){
+				System.out.println(privateVideo);
+			}
+		}
+		
 		//统计总数
 		@Test
 		public void testCount()

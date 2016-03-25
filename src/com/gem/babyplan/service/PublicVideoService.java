@@ -51,6 +51,11 @@ public class PublicVideoService {
 		return dao.getAllPublicVideo();
 	}
 	
+	// 根据日期得到所有公共视频
+	public List<PublicVideo> getPublicVideoByTime(String date) {
+		return dao.getPublicVideoByTime(date);
+	}
+	
 	// 实现公共视频的分页查询
 	public List<PublicVideo> getPagePublicVideo(int curPage, int pageSize) {
 		return dao.getPagePublicVideo(curPage, pageSize);

@@ -32,6 +32,11 @@ public class PrivateVideoService {
 		return dao.getAllPrivateVideo();
 	}
 	
+	// 根据班级号和日期得到所有班级视频视频
+	public List<PrivateVideo> getPrivateVideoByClassNumberAndTime(String classNumber, String date) {
+		return dao.getPrivateVideoByClassNumberAndTime(classNumber, date);
+	}
+	
 	// 实现班级视频分页查询，按班级号
 	public List<PrivateVideo> getPagePrivateVideo(int curPage, int pageSize) {
 		return dao.getPagePrivateVideo(curPage, pageSize);

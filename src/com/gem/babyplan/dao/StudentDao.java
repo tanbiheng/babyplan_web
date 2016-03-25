@@ -6,14 +6,11 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.gem.babyplan.entity.Classes;
-import com.gem.babyplan.entity.Parent;
 import com.gem.babyplan.entity.Student;
-import com.gem.babyplan.exception.ParentRunTimeException;
 import com.gem.babyplan.exception.StudentRunTimeException;
 import com.gem.babyplan.utils.DBConnection;
 

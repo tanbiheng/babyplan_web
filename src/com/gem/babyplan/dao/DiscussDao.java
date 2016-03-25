@@ -131,7 +131,7 @@ public class DiscussDao {
 				Integer discussSuperId = discuss.getDiscuss().getDiscussId();
 				prep.setInt(3, discussSuperId);
 			}
-			prep.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			prep.setTimestamp(4, new Timestamp(discuss.getDiscussPublishTime().getTime()));
 			prep.setString(5, discuss.getDiscussText());
 			prep.setInt(6, discuss.getIsLast());
 			prep.setInt(7, discuss.getDiscussId());
