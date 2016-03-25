@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.entity.Station;
 import com.gem.babyplan.service.CartoonService;
+import com.gem.babyplan.service.CartoonServiceInterface;
 import com.gem.babyplan.service.StationService;
 
 /**
@@ -32,7 +33,7 @@ public class StationListServlet2 extends HttpServlet {
 				StationService ss = new StationService();
 				List<Station> list =ss.getStationByCartoonId(id);
 				//由于需要动漫的名称，因此需要把动漫对象也找出来
-				CartoonService cs = new CartoonService();
+				CartoonServiceInterface cs = new CartoonService();
 				Cartoon cartoon =cs.getCartoonById(id);
 				System.out.println(cartoon);
 				//最后跳转的是每一集数的显示页面

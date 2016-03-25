@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.entity.StorySong;
 import com.gem.babyplan.service.CartoonService;
+import com.gem.babyplan.service.CartoonServiceInterface;
 import com.gem.babyplan.utils.ConstantBabyPlan;
 import com.google.gson.Gson;
 
@@ -27,7 +28,7 @@ public class CarToonListServlet extends HttpServlet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		CartoonService cService = new CartoonService();
+		CartoonServiceInterface cService = new CartoonService();
 		
 		int currPage =1;
 		String current=request.getParameter("curPage");
