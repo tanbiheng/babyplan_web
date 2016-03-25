@@ -16,6 +16,7 @@ import com.gem.babyplan.entity.Parent_Download;
 import com.gem.babyplan.entity.Station;
 import com.gem.babyplan.exception.ParentDownRunTimeException;
 import com.gem.babyplan.exception.StationDaoRunTimeException;
+import com.gem.babyplan.service.DownloadService;
 import com.gem.babyplan.utils.DBConnection;
 
 /**
@@ -122,14 +123,15 @@ public class Parent_DownloadDao
 			list =new ArrayList<>();
 			Parent p = null;
 			Download d = null;
+			DownloadService downloadService = new DownloadService();
 			while(rSet.next())
 			{
 				pd= new Parent_Download();
 				p = new Parent();
 				p.setParentId(rSet.getInt("parentId"));
 				pd.setParent(p);
-				d=new Download();
-				d.setDownloadId(rSet.getInt("downloadId"));
+				d=downloadService.getDownloadByDownloadId(rSet.getInt("downloadId"));
+//				d.setDownloadId(rSet.getInt("downloadId"));
 				pd.setDownload(d);
 				pd.setDownloadTime(rSet.getTimestamp("downloadTime"));
 			

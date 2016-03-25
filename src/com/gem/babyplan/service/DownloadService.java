@@ -22,4 +22,9 @@ public class DownloadService {
 	public List<Download> selectAll() {
 		return dao.selectAll();
 	}
+	
+	// 根据主键得到download
+	public Download getDownloadByDownloadId(int downloadId) {
+		return dao.getDownloadByDownloadId(downloadId);
+	}
 }

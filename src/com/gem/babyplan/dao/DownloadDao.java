@@ -13,6 +13,7 @@ import com.gem.babyplan.entity.Download;
 import com.gem.babyplan.entity.PrivateVideo;
 import com.gem.babyplan.entity.PublicVideo;
 import com.gem.babyplan.exception.DownloadRuntimeException;
+import com.gem.babyplan.service.PrivateVideoService;
 import com.gem.babyplan.utils.DBConnection;
 
 public class DownloadDao {
@@ -95,13 +96,14 @@ public class DownloadDao {
 			String sql = "select downloadId,publicId,privateId from download";
 			prep = conn.prepareStatement(sql);
 			rs = prep.executeQuery();
+			PrivateVideoService privateVideoService = new PrivateVideoService();
 			while (rs.next()) {
 				Download download = new Download();
 				
 				PublicVideo publicVideo = new PublicVideo();
 				publicVideo.setPublicId(rs.getInt("publicId"));
-				PrivateVideo privateVideo = new PrivateVideo();
-				privateVideo.setPrivateId(rs.getInt("privateId"));
+				PrivateVideo privateVideo = privateVideoService.getVideoById(rs.getInt("privateId"));
+//				privateVideo.setPrivateId(rs.getInt("privateId"));
 				
 				download.setDownloadId(rs.getInt("downloadId"));
 				download.setPublicVideo(publicVideo);
@@ -121,5 +123,45 @@ public class DownloadDao {
 			DBConnection.release(conn, prep, rs);
 		}
 		return list;
+	}
+	
+	// 根据主键得到download
+	public Download getDownloadByDownloadId(int downloadId) {
+		Connection conn = null;
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+		Download download = null;
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "select downloadId,publicId,privateId from download where downloadId = ?";
+			prep = conn.prepareStatement(sql);
+			prep.setInt(1, downloadId);
+			rs = prep.executeQuery();
+			PrivateVideoService privateVideoService = new PrivateVideoService();
+			if (rs.next()) {
+				download = new Download();
+				
+				PublicVideo publicVideo = new PublicVideo();
+				publicVideo.setPublicId(rs.getInt("publicId"));
+				PrivateVideo privateVideo = privateVideoService.getVideoById(rs.getInt("privateId"));
+//				privateVideo.setPrivateId(rs.getInt("privateId"));
+				
+				download.setDownloadId(rs.getInt("downloadId"));
+				download.setPublicVideo(publicVideo);
+				download.setPrivateVideo(privateVideo);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DownloadRuntimeException("下载查询所有方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DownloadRuntimeException("下载查询所有方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DownloadRuntimeException("下载查询所有方法出错");
+		} finally {
+			DBConnection.release(conn, prep, rs);
+		}
+		return download;
 	}
 }

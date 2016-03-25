@@ -61,7 +61,7 @@ public class Parent_DownLoadTest
 	public void testGetAllByPId ()
 	{
 		
-		List<Parent_Download> list =pdl.getDownByParent(6);
+		List<Parent_Download> list =pdl.getDownByParent(5);
 		for (Parent_Download parent_Download : list) {
 			System.out.println(parent_Download);
 			
