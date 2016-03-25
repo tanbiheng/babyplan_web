@@ -12,6 +12,7 @@ import javax.servlet.http.Part;
 import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.entity.Station;
 import com.gem.babyplan.service.CartoonService;
+import com.gem.babyplan.service.CartoonServiceInterface;
 import com.gem.babyplan.service.StationService;
 import com.gem.babyplan.utils.ConstantBabyPlan;
 
@@ -31,7 +32,7 @@ public class AddStationOfCartoonServlet extends HttpServlet
 		String ssBrief=request.getParameter("ssBrief");
 		//String stationFile = request.getParameter("loadFile");
 		//需要做的是按照卡通片的路径，存放这部动画片。先找到该动漫片
-		CartoonService cService = new CartoonService();
+		CartoonServiceInterface cService = new CartoonService();
 		Cartoon cartoon =cService.getCartoonById(Integer.parseInt(cartoonId));
 		//得到的上传文件
 		Part part =request.getPart("loadFile");

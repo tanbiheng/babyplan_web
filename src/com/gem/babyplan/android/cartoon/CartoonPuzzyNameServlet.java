@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,41 +15,24 @@ import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.entity.Station;
 import com.gem.babyplan.service.CartoonService;
 import com.gem.babyplan.service.CartoonServiceInterface;
-import com.gem.babyplan.utils.ConstantBabyPlan;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Servlet implementation class CartoonListServlet
+ * Servlet implementation class CartoonPuzzyNameServlet
  */
-@WebServlet("/CartoonListServlet")
-public class CartoonListServlet extends HttpServlet 
+@WebServlet("/CartoonPuzzyNameServlet")
+public class CartoonPuzzyNameServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = 1L;
-
-	//这里面应该得到卡通的全部内容
+ //根据安卓端的模糊名字查询，返回list集合
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		CartoonServiceInterface cs = new CartoonService();
-		int currPage =1;
-		String current=request.getParameter("curPage");
-		if (current!=null) 
-		{	
-			currPage=Integer.parseInt(current);
-			
-		}
-		HashMap<Cartoon,List<Station>> hashMap = cs.getAndroidPagedCartoon(currPage,  ConstantBabyPlan.RECODE_SHOW_NUM);
-		
-		for (Map.Entry<Cartoon, List<Station>> entry: hashMap.entrySet())
-		{
-			System.out.println(entry.getKey());
-			List<Station> list = entry.getValue();
-			for (Station station : list) {
-				System.out.println(station);
-			}
-		}
-		
+		//不允许为空值
+		String puzzyName=request.getParameter("puzzyName");
+		CartoonServiceInterface csi = new CartoonService();
+		HashMap<Cartoon, List<Station>> hashMap =csi.getCartoonByCartoonName(puzzyName);
+		//返回json数据
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().disableHtmlEscaping().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		String songs = gson.toJson(hashMap);
 		System.out.println(songs);
@@ -58,10 +40,8 @@ public class CartoonListServlet extends HttpServlet
 		pWriter.write(songs);
 		pWriter.flush();
 		pWriter.close();
-		
 	}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);

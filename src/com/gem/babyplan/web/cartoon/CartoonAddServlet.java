@@ -12,6 +12,7 @@ import javax.servlet.http.Part;
 
 import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.service.CartoonService;
+import com.gem.babyplan.service.CartoonServiceInterface;
 import com.gem.babyplan.utils.ConstantBabyPlan;
 
 /**
@@ -48,7 +49,7 @@ public class CartoonAddServlet extends HttpServlet {
 		String urlPath ="/babyresource"+path2;*/
 		String urlPath=ConstantBabyPlan.CARTOON_URL+name+"/"+fileName;
 		cartoon.setcThumbnail(urlPath);
-		CartoonService cs = new CartoonService();
+		CartoonServiceInterface cs = new CartoonService();
 		cs.save(cartoon);
 		//操作完后，跳转到动画片页面的list展示页面
 		request.getRequestDispatcher("/CarToonListServlet").forward(request,response);

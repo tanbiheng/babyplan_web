@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.gem.babyplan.entity.Cartoon;
 import com.gem.babyplan.service.CartoonService;
+import com.gem.babyplan.service.CartoonServiceInterface;
 
 /**
  * Servlet implementation class AddStationServlet
@@ -24,7 +25,7 @@ public class AddStationServlet extends HttpServlet {
 	{
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		CartoonService cService = new CartoonService();
+		CartoonServiceInterface cService = new CartoonService();
 		List<Cartoon> list = cService.selectAll();
 		//进行判断
 		
