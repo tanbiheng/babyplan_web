@@ -2,8 +2,9 @@ package com.gem.babyplan.entity;
 
 import java.util.Date;
 
-public class Word {
-	private int wordId;//留言id，主键
+public class Word 
+{
+	private Integer wordId;//留言id，主键
 	
 	private Word word;//父id，自连接
 	
@@ -13,10 +14,10 @@ public class Word {
 	private String wordText;//留言内容
 	private Date wordTime;//留言时间
 	
-	public int getWordId() {
+	public Integer getWordId() {
 		return wordId;
 	}
-	public void setWordId(int wordId) {
+	public void setWordId(Integer wordId) {
 		this.wordId = wordId;
 	}
 	public Word getWord() {
@@ -49,12 +50,12 @@ public class Word {
 	public void setWordTime(Date wordTime) {
 		this.wordTime = wordTime;
 	}
-	
 	@Override
 	public String toString() {
 		return "Word [wordId=" + wordId + ", word=" + word + ", parent=" + parent + ", teacher=" + teacher
 				+ ", wordText=" + wordText + ", wordTime=" + wordTime + "]";
 	}
 	
+   	
 	
 }
