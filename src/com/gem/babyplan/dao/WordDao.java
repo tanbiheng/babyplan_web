@@ -649,6 +649,65 @@ public class WordDao
 					}
 					return list;
 				}
+				//再写个分页查询
+				//实现通过家长id,以及superId，得到家长发起的会话，或者说是一个主题吧。分页查询
+				public List<Word> getPageParentThemeWord (int curPage,int pageSize,int parentId)
+				{
+					Connection conn=null;
+					PreparedStatement pStatement=null;
+					ResultSet rSet =null;
+					List<Word> list =null;
+					Word w = null;
+					try {
+						conn=DBConnection.getConnection();
+						int firstRecoder = (curPage-1)*pageSize;
+						//取出所有家长发起的主题。
+						String sql ="select wordId,wordSuperId,parentId,teacherNumber,wordText,wordTime from word where parentId=? and wordSuperId is null order by wordTime desc limit ?,?";
+						pStatement =conn.prepareStatement(sql);
+						pStatement.setInt(1, parentId);
+						pStatement.setInt(2, firstRecoder);
+						pStatement.setInt(3, pageSize);
+						rSet=pStatement.executeQuery();
+						list = new ArrayList<Word>();
+						//父亲的id
+						Word wFather = null;
+						while (rSet.next()) 
+						{
+							w = new Word();
+							wFather = new Word();
+							wFather.setWordId(rSet.getInt("wordSuperId"));
+							Parent p = new Parent();
+							p.setParentId(rSet.getInt("parentId"));
+							Teacher t = new Teacher();
+							t.setTeacherNumber(rSet.getString("teacherNumber"));
+							w.setWord(wFather);
+							w.setTeacher(t);
+							w.setParent(p);
+							w.setWordId(rSet.getInt("wordId"));
+							w.setWordText(rSet.getString("wordText"));
+							w.setWordTime(rSet.getTimestamp("wordTime"));
+							
+							list.add(w);
+							
+						}
+					}
+					catch (ClassNotFoundException e)
+					{
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (SQLException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} finally 
+					{
+						// 6.关闭资源
+						DBConnection.release(conn, pStatement,rSet);
+					}
+					return list;
+				}
 				//统计总个数
 				
 				public int getWordNumber ()
@@ -727,7 +786,94 @@ public class WordDao
 					return total;
 					
 				}
-				
+				public List<Word> list = new ArrayList<>();
+				//根据superId，递归，把所有的符合条件的都查出来？
+				//写个方法，调用这个list
+				public List<Word> getWordsBySuperId(int superId)
+				{
+					getAllWordsBySuperId(superId);
+					return list;
+				}
+
+				//再写一个根据父id找记录，找到的返回集合，找不到返回集合长度为0
+				private void getAllWordsBySuperId(int id) 
+				{
+					// 1.连数据库
+					Connection conn = null;
+					// 3.获得PreparedStatement对象
+					PreparedStatement prep = null;
+					ResultSet rSet=null;
+					Word w =null;
+				//	List<Word> list =null;
+					try 
+					{
+						conn = DBConnection.getConnection();
+						// 2.sql语句
+						String sql = "select wordId,wordSuperId,parentId,teacherNumber,wordText,wordTime from word where wordSuperId=? order by wordTime desc";
+						prep = conn.prepareStatement(sql);
+						// 4.设置？的值	
+						prep.setInt(1, id);
+						// 5.执行sql语句
+						rSet=prep.executeQuery();
+						//list = new ArrayList<Word>();
+						//父亲的id
+						Word wFather = null;
+						//有记录，才能执行
+						if (rSet.next()) 
+						{
+							w = new Word();
+							wFather = new Word();
+							wFather.setWordId(rSet.getInt("wordSuperId"));
+							Parent p = new Parent();
+							p.setParentId(rSet.getInt("parentId"));
+							Teacher t = new Teacher();
+							t.setTeacherNumber(rSet.getString("teacherNumber"));
+							w.setWord(wFather);
+							w.setTeacher(t);
+							w.setParent(p);
+							w.setWordId(rSet.getInt("wordId"));
+							w.setWordText(rSet.getString("wordText"));
+							w.setWordTime(rSet.getTimestamp("wordTime"));
+							//判断父id是否为null
+							/*	if (rSet.getInt("wordSuperId")==0)
+							{
+								//表明没有父id
+								Word father = new Word();
+								father.setWordId(0);
+								w.setWord(father);
+							}else {
+								//表明有父id
+								Word father = new Word();
+								father.setWordId(rSet.getInt("wordSuperId"));
+								w.setWord(father);
+							}*/
+							list.add(w);	
+						}
+						//递归？,有条件的,只要根据父id查询的不为null,就继续递归查询
+						if(w!=null)
+						{
+							
+							getAllWordsBySuperId(w.getWordId());
+						}
+						
+					}
+					catch (ClassNotFoundException e)
+					{
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (SQLException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} finally 
+					{
+						// 6.关闭资源
+						DBConnection.release(conn, prep,rSet);
+					}
+					//return list;
+				}
 				
 		
 		
