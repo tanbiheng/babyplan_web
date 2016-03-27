@@ -92,51 +92,52 @@ public class ParentsService {
 			}else{
 				discusses=null;
 			}
-//			List<Discuss> discusses = new ArrayList<Discuss>();
-//			discusses.clear();
-//			List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
-//
-//			discusses.addAll(discusses2);
 
 			dynamic_discuss_Map.put(dynamicKey, discusses);
 		}
 
-		// List<Parent> parents =
-		// applyService.getParentFriendByParentId(applyParentId);
-		// Integer[] parentIds = new
-		// Integer[parents.size()+1];
-		//
-		// for (int i = 0; i < parents.size(); i++) {
-		// Parent parent = parents.get(i);
-		// parentIds[i] = parent.getParentId();
-		// }
-		// parentIds[parents.size()] = applyParentId;
-		//
-		// List<Dynamic> dynamics =
-		// dynamicService.getDynamicByParentId(parentIds);
-		//
-		// Dynamic dynamicKey = null;
-		// Map<Dynamic, List<Discuss>> dynamic_discuss_Map = new
-		// TreeMap<Dynamic, List<Discuss>>();
-		// List<Discuss> discusses = new
-		// ArrayList<Discuss>();
-		//
-		// for (Dynamic dynamic : dynamics) {
-		// int dynamicId = dynamic.getDynamicId();
-		//// System.out.println(dynamicId);
-		// TreeMap<Integer, List<Discuss>> discussesMap =
-		// discussService.getAllSortedDiscuss(dynamicId);
-		// discusses.clear();
-		// discusses = discussService.convertMapToList(discussesMap);
-		//// for (Discuss discuss : discusses) {
-		//// System.out.println(discuss);
-		//// }
-		// dynamicKey = dynamicService.getDynamicByDynamicId(dynamicId);
-		// dynamic_discuss_Map.put(dynamicKey, discusses);
-		// }
 		return dynamic_discuss_Map;
 	}
 
+	// 根据某个家长id 得到家长所有的动态和评论
+	public Map<Dynamic, List<Discuss>> getPersonDynamic_DiscussByParentId(int applyParentId,int curPage,int pageSize) {
+
+//		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);//根据家长id查找到的家长好友
+
+		Integer[] parentIds = {applyParentId};//家长圈也能显示自己的动态，所以要把家长自己加上去
+
+//		for (int i = 0; i < parents.size(); i++) {
+//			Parent parent = parents.get(i);
+//			parentIds[i] = parent.getParentId();
+//		}
+//		parentIds[parents.size()] = applyParentId;
+
+		TreeMap<Dynamic, List<Discuss>> dynamic_discuss_Map = new TreeMap<Dynamic, List<Discuss>>();//动态及对应评论的map
+
+		List<Dynamic> dynamics = dynamicService.getDynamicByParentId(parentIds,curPage,pageSize);//家长加家长所有好友的动态集合
+
+		for (Dynamic dynamic : dynamics) {
+			DiscussService discussService = new DiscussService();
+			int dynamicId = dynamic.getDynamicId();
+			Dynamic dynamicKey = dynamicService.getDynamicByDynamicId(dynamicId);
+			List<Discuss> judeDiscusses = discussService.getDiscussByDynamicId(dynamicId);
+			List<Discuss> discusses = new ArrayList<Discuss>();
+			if(judeDiscusses!=null&&judeDiscusses.size()!=0){
+				TreeMap<Integer, List<Discuss>> discussesMap = discussService.getAllSortedDiscuss(dynamicId);
+				discusses.clear();
+				List<Discuss> discusses2 = discussService.convertMapToList(discussesMap);//根据父id查询到的评论map转换后的评论集合
+				discusses.addAll(discusses2);
+			}else{
+				discusses=null;
+			}
+
+			dynamic_discuss_Map.put(dynamicKey, discusses);
+		}
+
+		return dynamic_discuss_Map;
+	}
+	
+	// 根据家长id  得到所有家长及家长好友的动态
 	public List<Dynamic> getDynamicByParentId(int applyParentId,int curPage,int pageSize) {
 		List<Parent> parents = applyService.getParentFriendByParentId(applyParentId);
 

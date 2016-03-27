@@ -12,53 +12,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.gem.babyplan.entity.Dynamic;
 import com.gem.babyplan.entity.Parent;
-import com.gem.babyplan.service.DynamicService;
+import com.gem.babyplan.service.ParentsService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 
-@WebServlet("/SavaDynamicServlet")
+@WebServlet("/ChangeParentBackground")
 @MultipartConfig
-public class SavaDynamicServlet extends HttpServlet {
+public class ChangeParentBackground extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String dynamicText = request.getParameter("dynamicText");
-//		System.out.println(dynamicText);
 		String parentString = request.getParameter("parent");
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		Type type = new TypeToken<Parent>(){}.getType();
 		Parent parent = gson.fromJson(parentString, type);
-//		System.out.println(parent);
 		
-//		application/x-www-form-urlencoded
 		
-		String contentType = request.getContentType();
+		Part part = request.getPart("photo");
+		String photoName1 = null;
+		String photoName = part.getSubmittedFileName();
+		photoName1 = "/babyresource/parents/parentBackground/"+photoName;//存入数据库的地址
+		part.write("D:/BabyBaby/parents/parentBackground/"+photoName);
 		
-//		String contentType1 = contentType.split(";")[0];
-//		System.out.println(contentType1);
-		
-		if(!contentType.startsWith("application")){
-			Part part = request.getPart("photo");
-//			System.out.println(part);
-			String photoName1 = null;
-			String photoName = part.getSubmittedFileName();
-			photoName1 = "/babyresource/dynamicphotoes/"+photoName;//存入数据库的地址
-			part.write("D:/BabyBaby/dynamicphotoes/"+photoName);
-		}
-		
-		Dynamic dynamic = new Dynamic();
-		dynamic.setDynamicText(dynamicText);
-		dynamic.setParent(parent);
-		dynamic.setDynamicFile(null);
-		
-		DynamicService dynamicService = new DynamicService();
-		dynamicService.save(dynamic);
+		parent.setBackgroundPhoto(photoName1);
+		ParentsService parentsService = new ParentsService();
+		parentsService.updateParent(parent);
 		
 		String result = "发表成功";
 		Gson gson2 = new Gson();
@@ -71,7 +53,7 @@ public class SavaDynamicServlet extends HttpServlet {
 		}
 	}
 
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
