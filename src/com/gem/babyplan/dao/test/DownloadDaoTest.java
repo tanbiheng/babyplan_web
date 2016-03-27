@@ -42,4 +42,12 @@ public class DownloadDaoTest {
 			System.out.println(download);
 		}
 	}
+	
+	// 根据主键得到download
+	@Test
+	public void getDownloadByDownloadIdTest(){
+		int downloadId = 2;
+		Download download = dao.getDownloadByDownloadId(downloadId);
+		System.out.println(download);
+	}
 }
