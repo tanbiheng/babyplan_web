@@ -5,16 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.gem.babyplan.dao.ClassesDao;
 import com.gem.babyplan.dao.ParentDao;
 import com.gem.babyplan.dao.StudentDao;
+import com.gem.babyplan.dao.TeacherDao;
+import com.gem.babyplan.entity.Classes;
 import com.gem.babyplan.entity.Discuss;
 import com.gem.babyplan.entity.Dynamic;
 import com.gem.babyplan.entity.Parent;
 import com.gem.babyplan.entity.Student;
+import com.gem.babyplan.entity.Teacher;
 
 public class ParentsService {
 	private ParentDao pDao = new ParentDao();
 	private StudentDao sDao = new StudentDao();
+	private TeacherDao tDao = new TeacherDao();
+	private ClassesDao cDao = new ClassesDao();
 
 	private ApplyService applyService = new ApplyService();
 	private DynamicService dynamicService = new DynamicService();
@@ -158,5 +164,15 @@ public class ParentsService {
 		
 		return dynamics;
 	}
-
+   //跟据家长id获得对应教师的姓名即可，其他不需要
+	public String getTeacherNumByParentId (int parentId)
+	{
+		Parent parent=pDao.getParentByParentId(parentId);
+		Student student =sDao.getStudentByNumber(parent.getStudent().getStudentNumber());
+		//Classes classes =cDao.getClassesByClassNumber(student.getClasses().getClassNumber());
+		Teacher teacher =tDao.getTeacherByClassesNum(student.getClasses().getClassNumber());
+		
+		
+	return teacher.getTeacherNumber();	
+	}
 }
