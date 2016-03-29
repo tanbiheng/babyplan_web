@@ -1,8 +1,9 @@
 package com.gem.babyplan.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Apply { 
+public class Apply implements Serializable { 
 	private int applyId;//申请id，主键
 	
 	private Parent applyParent;//申请家长
