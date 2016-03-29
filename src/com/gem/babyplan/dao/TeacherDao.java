@@ -218,6 +218,65 @@ public class TeacherDao
 					return t;		
 				}
 				
+				//查找某个教师，根据班级的num
+				public Teacher getTeacherByClassesNum (String num)
+				{
+					Connection conn=null;
+					PreparedStatement pStatement=null;
+					ResultSet rSet =null;
+					Teacher t =null;
+					
+					try {
+						conn=DBConnection.getConnection();
+						String sql ="select teacherNumber,classNumber,teacherName,teacherHeader,teacherPwd,power,teacherSex,teacherBirthday,teacherTelePhone,graduateSchool,degree,specialty,evaluate,reward,rewardShow from teacher where classNumber=?";
+						pStatement =conn.prepareStatement(sql);
+						pStatement.setString(1, num);
+						rSet=pStatement.executeQuery();
+						
+						if(rSet.next())
+						{
+							t=new Teacher();
+							Classes c = new Classes();
+							c.setClassNumber(rSet.getString("classNumber"));
+							t.setClasses(c);
+							t.setDegree(rSet.getString("degree"));
+							t.setEvaluate(rSet.getString("evaluate"));
+							t.setGraduateSchool(rSet.getString("graduateSchool"));
+							t.setPower(rSet.getInt("power"));
+							t.setReward(rSet.getString("reward"));
+							t.setRewardShow(rSet.getString("rewardShow"));
+							t.setSpecialty(rSet.getString("specialty"));
+							t.setTeacherBirthday(rSet.getDate("teacherBirthday"));
+							t.setTeacherHeader(rSet.getString("teacherHeader"));
+							t.setTeacherName(rSet.getString("teacherName"));
+							t.setTeacherNumber(rSet.getString("teacherNumber"));
+							t.setTeacherPwd(rSet.getString("teacherPwd"));
+							t.setTeacherSex(rSet.getString("teacherSex"));
+							t.setTeacherTelePhone(rSet.getString("teacherTelePhone"));
+							
+						}
+						
+						
+					} catch (ClassNotFoundException e) 
+					{
+						e.printStackTrace();
+						throw new TeacherRunTimeException("教师表Dao层出错");
+					} catch (SQLException e) 
+					{
+						e.printStackTrace();
+						throw new TeacherRunTimeException("教师表Dao层出错");
+					} catch (IOException e)
+					{
+						e.printStackTrace();
+						throw new TeacherRunTimeException("教师表Dao层出错");
+					}
+					finally
+					{
+						DBConnection.release(conn, pStatement,rSet);
+					}
+					return t;		
+				}
+				
 				//查找所有老师
 				public List<Teacher> getAllTeacher ()
 				{
