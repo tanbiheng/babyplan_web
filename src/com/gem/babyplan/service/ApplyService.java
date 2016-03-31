@@ -41,4 +41,8 @@ public class ApplyService {
 		return parents;
 	}
 	
+	// 根据家长id 查出所有家长的申请记录
+	public List<Apply> getApplyByBeApplyParentId(int applyParentId){
+		return dao.getApplyByBeApplyParentId(applyParentId);
+	}
 }

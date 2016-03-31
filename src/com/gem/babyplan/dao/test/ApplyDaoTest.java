@@ -60,12 +60,23 @@ public class ApplyDaoTest {
 		}
 	}
 	
+	// 根据家长id 查出所有家长好友
 	@Test
 	public void getApplyByParentIdTest(){
 		int applyParentId = 5;
 		List<Apply> list = dao.getApplyByParentId(applyParentId);
 		for (Apply apply : list) {
 			System.out.println(apply+","+apply.getBeApplyParent().getParentId()+","+apply.getApplyParent().getParentId());
+		}
+	}
+	
+	@Test
+	// 根据申请家长id 查出所有家长的申请记录
+	public void getApplyByBeApplyParentId(){
+		int beApplyParentId = 5;
+		List<Apply> list = dao.getApplyByBeApplyParentId(beApplyParentId);
+		for (Apply apply : list) {
+			System.out.println(apply);
 		}
 	}
 	
