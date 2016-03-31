@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -70,7 +69,7 @@ public class DiscussDao {
 		Connection conn = null;
 		PreparedStatement prep = null;
 		List<Discuss> list = getDiscussByDiscussSuperId(discussId);
-
+		
 		try {
 			conn = DBConnection.getConnection();
 			String sql = "delete from discuss where discussId = ? and dynamicId = ?";
@@ -286,6 +285,67 @@ public class DiscussDao {
 			String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where discussSuperId = ?";
 			prep = conn.prepareStatement(sql);
 			prep.setInt(1, discussSuperId);
+			rs = prep.executeQuery();
+
+			Dynamic dynamic = null;
+			Parent parent = null;
+			Discuss discuss1 = null;
+
+			while (rs.next()) {
+				discuss = new Discuss();
+				dynamic = new Dynamic();
+				dynamic.setDynamicId(rs.getInt("dynamicId"));
+				parent = new Parent();
+				parent.setParentId(rs.getInt("parentId"));
+				discuss1 = new Discuss();
+				discuss1.setDiscussId(rs.getInt("discussSuperId"));
+
+				discuss.setDiscussId(rs.getInt("discussId"));
+				discuss.setDynamic(dynamic);
+				discuss.setParent(parent);
+				discuss.setDiscuss(discuss1);
+				discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
+				discuss.setDiscussText(rs.getString("discussText"));
+				discuss.setIsLast(rs.getInt("isLast"));
+
+				list.add(discuss);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论查询所有方法出错");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论查询所有方法出错");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new DiscussRuntimeException("评论查询所有方法出错");
+		} finally {
+			DBConnection.release(conn, prep, rs);
+		}
+		return list;
+	}
+	
+	
+	// 根据父id得到评论
+	public List<Discuss> getDiscussByDynamicIdAndDiscussSuperId(Integer dynamicId , Integer discussSuperId) {
+		Connection conn = null;
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+		Discuss discuss = null;
+		List<Discuss> list = new ArrayList<Discuss>();
+		try {
+			conn = DBConnection.getConnection();
+			String sql = null;
+			if(discussSuperId==null){
+				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId is null";
+				prep = conn.prepareStatement(sql);
+			}else{
+				sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId = ?";
+				prep = conn.prepareStatement(sql);
+				prep.setInt(2, discussSuperId);
+			}
+			
+			prep.setInt(1, dynamicId);
 			rs = prep.executeQuery();
 
 			Dynamic dynamic = null;

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,11 @@ public class ApplyDao {
 			// 4.设置？的值
 			prep.setInt(1, apply.getApplyParent().getParentId());
 			prep.setInt(2, apply.getBeApplyParent().getParentId());
-			prep.setString(3, apply.getApplyText());
+			if(apply.getApplyText()==null){
+				prep.setNull(3, Types.VARCHAR);
+			}else{
+				prep.setString(3, apply.getApplyText());
+			}
 			prep.setInt(4, apply.getApplyStatus());
 			prep.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 			// 5.执行sql语句
