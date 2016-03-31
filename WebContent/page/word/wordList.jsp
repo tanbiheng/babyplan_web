@@ -12,7 +12,7 @@
 	
 	function addWord(yy) 
 	{
-		alert("ok");
+		//alert("ok");
 		  debugger;
 		var parentId=document.getElementsByName("parentId")[yy].value;
 		//debugger;
