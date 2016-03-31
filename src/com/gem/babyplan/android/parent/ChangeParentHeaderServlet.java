@@ -1,7 +1,6 @@
 package com.gem.babyplan.android.parent;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletException;
@@ -19,9 +18,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 
-@WebServlet("/ChangeParentBackground")
+@WebServlet("/ChangeParentHeaderServlet")
 @MultipartConfig
-public class ChangeParentBackground extends HttpServlet {
+public class ChangeParentHeaderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 
@@ -32,29 +31,20 @@ public class ChangeParentBackground extends HttpServlet {
 		Parent parent = gson.fromJson(parentString, type);
 		
 		
-		Part part = request.getPart("photo");
+		Part part = request.getPart("header");
 		String photoName1 = null;
 		String photoName = part.getSubmittedFileName();
-		photoName1 = "/babyresource/parents/parentBackground/"+photoName;//存入数据库的地址
-		part.write("D:/BabyBaby/parents/parentBackground/"+photoName);
+		photoName1 = "/babyresource/parents/parentHeader/"+photoName;//存入数据库的地址
+		part.write("D:/BabyBaby/parents/parentHeader/"+photoName);
 		
-		parent.setBackgroundPhoto(photoName1);
+		parent.setParentHeader(photoName1);
 		ParentsService parentsService = new ParentsService();
 		parentsService.updateParent(parent);
-		
-//		String result = "发表成功";
-//		Gson gson2 = new Gson();
-//		String gsonString = gson2.toJson(result);
-//		PrintWriter writer = response.getWriter();
-//		writer.print(gsonString);
-//		writer.flush();
-//		if(writer!=null){
-//			writer.close();
-//		}
 	}
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

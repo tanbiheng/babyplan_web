@@ -42,6 +42,7 @@ public class SavaDynamicServlet extends HttpServlet {
 		
 //		String contentType1 = contentType.split(";")[0];
 //		System.out.println(contentType1);
+		Dynamic dynamic = new Dynamic();
 		
 		if(!contentType.startsWith("application")){
 			Part part = request.getPart("photo");
@@ -50,12 +51,15 @@ public class SavaDynamicServlet extends HttpServlet {
 			String photoName = part.getSubmittedFileName();
 			photoName1 = "/babyresource/dynamicphotoes/"+photoName;//存入数据库的地址
 			part.write("D:/BabyBaby/dynamicphotoes/"+photoName);
+			dynamic.setDynamicFile(photoName1);
+		}else{
+			dynamic.setDynamicFile(null);
 		}
 		
-		Dynamic dynamic = new Dynamic();
+
 		dynamic.setDynamicText(dynamicText);
 		dynamic.setParent(parent);
-		dynamic.setDynamicFile(null);
+		
 		
 		DynamicService dynamicService = new DynamicService();
 		dynamicService.save(dynamic);

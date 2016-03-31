@@ -30,7 +30,7 @@ public class StorySongGetByNameServlet extends HttpServlet {
 		System.out.println(ss);
 		if(ss==null)
 		{
-			ss=sss.getStorySongByName("小炳华");
+			ss=sss.getStorySongByName("好想你");
 		}
 		
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().disableHtmlEscaping().setDateFormat("yyyy-MM-dd HH:mm:ss").create();

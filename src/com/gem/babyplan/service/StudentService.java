@@ -67,5 +67,11 @@ public class StudentService
 			{
 				return sDao.getStudentNumber();
 			}
+			
+			//更新一个学生的信息
+			public void updateStudent (Student s)
+			{
+				sDao.updateStudent(s);
+			}
 
 }
