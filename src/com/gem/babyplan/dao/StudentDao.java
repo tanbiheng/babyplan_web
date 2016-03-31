@@ -244,6 +244,60 @@ public class StudentDao
 			
 			
 		}
+		//根据班级的主键，查找所有属于班级的学生
+		public List<Student> getStudentsByClassesNum(String classNumber)
+		{
+			Connection conn=null;
+			PreparedStatement pStatement=null;
+			ResultSet rSet =null;
+			Student s =null;
+			List<Student> list=null;
+			try {
+				conn=DBConnection.getConnection();
+				String sql ="select studentNumber,studentName,classNumber,studentSex,studentBirthday,studentPhotoURL from student where classNumber=?";
+				pStatement =conn.prepareStatement(sql);
+				pStatement.setString(1, classNumber);
+				
+				rSet=pStatement.executeQuery();
+				list=new ArrayList<>();
+				while(rSet.next())
+				{
+					Classes classes = new Classes();
+					//存这个属性即可，其它不用存
+					classes.setClassNumber(rSet.getString("classNumber"));
+					//classes.setClassName(rSet.getString("c.className"));
+					s=new Student();
+					s.setStudentNumber(rSet.getString("studentNumber"));
+					s.setStudentName(rSet.getString("studentName"));
+					s.setClasses(classes);
+					s.setStudentSex(rSet.getString("studentSex"));
+					s.setStudentBirthday(rSet.getDate("studentBirthday"));
+					s.setStudentPhotoURL(rSet.getString("studentPhotoURL"));
+					list.add(s);
+				}
+				
+				
+			} catch (ClassNotFoundException e) 
+			{
+				e.printStackTrace();
+				throw new StudentRunTimeException("学生表dao层出错");
+			} catch (SQLException e) 
+			{
+				e.printStackTrace();
+				throw new StudentRunTimeException("学生表dao层出错");
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+				throw new StudentRunTimeException("学生表dao层出错");
+			}
+			finally
+			{
+				DBConnection.release(conn, pStatement,rSet);
+			}
+			return list;
+			
+			
+		}
 		//返回所有学生的对象
 		public List<Student> getAllStudent ()
 		{

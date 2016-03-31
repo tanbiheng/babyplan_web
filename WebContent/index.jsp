@@ -56,7 +56,7 @@
 		<div title="留言管理"  style="padding:10px; " data-options="iconCls:'icon-reload'">   
 			<ul id="tt" class="easyui-tree" >   
 				<li >   
-					<span><a url="page/word/wordList.jsp">留言管理</a></span>  
+					<span><a url="/babyplan/ShowLeaveMessageServlet?teacherNumber=${teacherNumber}">留言管理</a></span>  
 				</li>   
 			</ul>     
 		</div>  
