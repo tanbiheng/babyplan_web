@@ -708,6 +708,64 @@ public class WordDao
 					}
 					return list;
 				}
+				//再写个分页查询
+				//实现通过家长id,以及superId，得到家长发起的会话，得到所有家长发起的会话
+				public List<Word> getPageParentThemeWord (int parentId)
+				{
+					Connection conn=null;
+					PreparedStatement pStatement=null;
+					ResultSet rSet =null;
+					List<Word> list =null;
+					Word w = null;
+					try {
+						conn=DBConnection.getConnection();
+						
+						//取出所有家长发起的主题。
+						String sql ="select wordId,wordSuperId,parentId,teacherNumber,wordText,wordTime from word where parentId=? and wordSuperId is null order by wordTime desc";
+						pStatement =conn.prepareStatement(sql);
+						pStatement.setInt(1, parentId);
+						
+						rSet=pStatement.executeQuery();
+						list = new ArrayList<Word>();
+						//父亲的id
+						Word wFather = null;
+						while (rSet.next()) 
+						{
+							w = new Word();
+							wFather = new Word();
+							wFather.setWordId(rSet.getInt("wordSuperId"));
+							Parent p = new Parent();
+							p.setParentId(rSet.getInt("parentId"));
+							Teacher t = new Teacher();
+							t.setTeacherNumber(rSet.getString("teacherNumber"));
+							w.setWord(wFather);
+							w.setTeacher(t);
+							w.setParent(p);
+							w.setWordId(rSet.getInt("wordId"));
+							w.setWordText(rSet.getString("wordText"));
+							w.setWordTime(rSet.getTimestamp("wordTime"));
+							
+							list.add(w);
+							
+						}
+					}
+					catch (ClassNotFoundException e)
+					{
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (SQLException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new WordDaoRunTimeException("留言表dao层出错");
+					} finally 
+					{
+						// 6.关闭资源
+						DBConnection.release(conn, pStatement,rSet);
+					}
+					return list;
+				}
 				//统计总个数
 				
 				public int getWordNumber ()

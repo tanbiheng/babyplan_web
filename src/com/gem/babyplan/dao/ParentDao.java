@@ -255,6 +255,59 @@ public class ParentDao
 				}
 				return p;		
 			}
+			//查找某个家长，根据学生的num
+			public Parent getParentByStudentNum (String StudentNum)
+			{
+				Connection conn=null;
+				PreparedStatement pStatement=null;
+				ResultSet rSet =null;
+				Parent p =null;
+				
+				try {
+					conn=DBConnection.getConnection();
+					String sql ="select studentNumber,parentId,parentName,parentNickName,parentHeader,parentPwd,parentSex,parentTelePhone,address,backgroundPhoto from parent where studentNumber=?";
+					pStatement =conn.prepareStatement(sql);
+					pStatement.setString(1, StudentNum);
+					rSet=pStatement.executeQuery();
+					//一一对应
+					if(rSet.next())
+					{
+						p = new Parent();
+						p.setAddress(rSet.getString("address"));
+						p.setBackgroundPhoto(rSet.getString("backgroundPhoto"));
+						p.setParentHeader(rSet.getString("parentHeader"));
+						p.setParentId(rSet.getInt("parentId"));
+						p.setParentName(rSet.getString("parentName"));
+						p.setParentNickName(rSet.getString("parentNickName"));
+						p.setParentPwd(rSet.getString("parentPwd"));
+						p.setParentSex(rSet.getString("parentSex"));
+						p.setParentTelePhone(rSet.getString("parentTelePhone"));
+						Student s = new Student();
+						s.setStudentNumber(rSet.getString("studentNumber"));
+						p.setStudent(s);
+						
+					}
+					
+					
+				} catch (ClassNotFoundException e) 
+				{
+					e.printStackTrace();
+					throw new ParentRunTimeException("家长表dao层出错");
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+					throw new ParentRunTimeException("家长表dao层出错");
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+					throw new ParentRunTimeException("家长表dao层出错");
+				}
+				finally
+				{
+					DBConnection.release(conn, pStatement,rSet);
+				}
+				return p;		
+			}
 			
 			//查找某个家长的性别，目的主要看是否存在，根据学生序号
 			public String getParentByParentId (String studentNumber)

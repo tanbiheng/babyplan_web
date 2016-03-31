@@ -7,7 +7,7 @@
 <title>错误页面</title>
 </head>
 <body>
-  <c:if test="${ !empty error}">
+  <c:if test="${!empty error}">
    "${error}"
   </c:if>
 </body>
