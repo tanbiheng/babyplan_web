@@ -30,6 +30,6 @@ public class ConstantBabyPlan
 	public static final String STUDENT_BACKGROUND_FILE="D:/BabyBaby/students";
 	public static final String STUDENT_BACKGROUND_URL="/babyresource/students/";
 	//每页显示的数量，随时可以调整，假如这里显示的是3条记录
-	public static final int RECODE_SHOW_NUM =3;
+	public static final int RECODE_SHOW_NUM =8;
 
 }

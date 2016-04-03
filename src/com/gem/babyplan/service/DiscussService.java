@@ -67,4 +67,9 @@ public class DiscussService {
 	public List<Discuss> getDiscussByDynamicId(Integer dynamicId) {
 		return dao.getDiscussByDynamicId(dynamicId);
 	}
+	
+	//根据动态id 得到所有动态的0级评论
+	public List<Discuss> getNoSuperIdDiscussByDynamicId(Integer dynamicId) {
+		return dao.getNoSuperIdDiscussByDynamicId(dynamicId);
+	}
 }

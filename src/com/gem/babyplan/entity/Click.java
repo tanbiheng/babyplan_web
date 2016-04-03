@@ -1,8 +1,9 @@
 package com.gem.babyplan.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Click {
+public class Click implements Serializable {
 	private Dynamic dynamic;//动态
 	private Parent parent;//家长
 	

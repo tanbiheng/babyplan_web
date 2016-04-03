@@ -75,7 +75,12 @@ public class DiscussDao {
 			String sql = "delete from discuss where discussId = ? and dynamicId = ?";
 
 			prep = conn.prepareStatement(sql);
-			prep.setInt(1, discussId);
+			if(discussId==null){
+				prep.setNull(1, Types.INTEGER);
+			}else{
+				prep.setInt(1, discussId);
+			}
+			
 			prep.setInt(2, dynamicId);
 
 			if (list.size() == 0 && list != null) {
@@ -284,7 +289,11 @@ public class DiscussDao {
 
 			String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where discussSuperId = ?";
 			prep = conn.prepareStatement(sql);
-			prep.setInt(1, discussSuperId);
+			if(discussSuperId==null){
+				prep.setNull(1, Types.INTEGER);
+			}else{
+				prep.setInt(1, discussSuperId);
+			}
 			rs = prep.executeQuery();
 
 			Dynamic dynamic = null;
@@ -441,4 +450,56 @@ public class DiscussDao {
 		}
 	
 	
+		//根据动态id 得到所有动态的0级评论
+		public List<Discuss> getNoSuperIdDiscussByDynamicId(Integer dynamicId) {
+			Connection conn = null;
+			PreparedStatement prep = null;
+			ResultSet rs = null;
+			Discuss discuss = null;
+			List<Discuss> list = new ArrayList<Discuss>();
+			try {
+				conn = DBConnection.getConnection();
+
+				String sql = "select discussId,dynamicId,parentId,discussSuperId,discussPublishTime,discussText,isLast from discuss where dynamicId = ? and discussSuperId is null";
+				prep = conn.prepareStatement(sql);
+				prep.setInt(1, dynamicId);
+				rs = prep.executeQuery();
+
+				Dynamic dynamic = null;
+				Parent parent = null;
+				Discuss discuss1 = null;
+
+				while (rs.next()) {
+					discuss = new Discuss();
+					dynamic = new Dynamic();
+					dynamic.setDynamicId(rs.getInt("dynamicId"));
+					parent = new Parent();
+					parent.setParentId(rs.getInt("parentId"));
+					discuss1 = new Discuss();
+					discuss1.setDiscussId(rs.getInt("discussSuperId"));
+
+					discuss.setDiscussId(rs.getInt("discussId"));
+					discuss.setDynamic(dynamic);
+					discuss.setParent(parent);
+					discuss.setDiscuss(discuss1);
+					discuss.setDiscussPublishTime(rs.getTimestamp("discussPublishTime"));
+					discuss.setDiscussText(rs.getString("discussText"));
+					discuss.setIsLast(rs.getInt("isLast"));
+
+					list.add(discuss);
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new DiscussRuntimeException("评论查询所有方法出错");
+			} finally {
+				DBConnection.release(conn, prep, rs);
+			}
+			return list;
+		}
 }

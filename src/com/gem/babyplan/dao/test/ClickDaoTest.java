@@ -1,7 +1,7 @@
 package com.gem.babyplan.dao.test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -35,10 +35,36 @@ public class ClickDaoTest {
 		dao.delete(parentId, dynamicId);
 	}
 	
-	//修改
+	//得到点赞的个数
 	@Test
 	public void getCountTest(){
 		System.out.println(dao.getCount());
 	}
 
+	// 根据动态id得到点赞
+	@Test
+	public void getClickByDynamicIdTest(){
+		int dynamicId = 1;
+		List<Click> list = dao.getClickByDynamicId(dynamicId);
+		for (Click click : list) {
+			System.out.println(click);
+		}
+	}
+	
+	// 根据动态id和家长id 得到点赞
+	@Test
+	public void getClickByDynamicIdAndParentId(){
+		int dynamicId = 1;
+		int parentId = 1;
+		Click click = dao.getClickByDynamicIdAndParentId(parentId, dynamicId);
+		System.out.println(click);
+	}
+	
+	@Test
+	public void getDynamicIdsFromClickTest(){
+		List<Integer> list = dao.getDynamicIdsFromClick();
+		for (Integer integer : list) {
+			System.out.println(integer);
+		}
+	}
 }

@@ -113,4 +113,13 @@ public class DiscussDaoTest {
 //			System.out.println(discuss);
 //		}
 	}
+	@Test
+	public void getNoSuperIdDiscussByDynamicIdTest(){
+		int dynamicId = 13;
+		List<Discuss> list = dao.getDiscussByDynamicId(dynamicId);
+//		System.out.println(list);
+		for (Discuss discuss : list) {
+			System.out.println(discuss);
+		}
+	}
 }
