@@ -123,19 +123,21 @@
 			<p>&nbsp;</p>
 			${entry.key.wordTime}&nbsp;&nbsp;&nbsp;&nbsp;
 			<!-- <font id="words" color="#0033FF">回复</font> -->
-			<c:if test="${entry.value.size()%2==0}">
+			
 			
 			
 			<!-- <textarea name="wordText"  cols="60" rows="3"></textarea> -->
 		
-			</c:if>
+			
 			</td>
 		</tr>
 		
 		<tr>
-			<td colspan="4"><hr color="#E5E5E5"></td>
-			<td><input type="button" value="提交回复" onclick="addWord(${xx.index})" name="tijiao">&nbsp;&nbsp;</td>
-			<td><input type="text" name="textWord" value="请留言"  /></td>
+		  
+			<!-- <td colspan="4"><hr color="#E5E5E5"></td> -->
+			<td></td>
+			<td><input type="text" name="textWord" value="请留言" />&nbsp;<input type="button" value="提交回复" onclick="addWord(${xx.index})" name="tijiao"></td>	
+			
 		</tr>
 		<tr>
 		<td>

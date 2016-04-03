@@ -42,8 +42,8 @@ public class WordAddFromTeacherServlet extends HttpServlet {
 		ww.setWord(superWord);
 		ww.setWordText(wordText);
 		ws.addWord2(ww);
-		request.setAttribute("teacherNumber", teacherNum);
-		request.getRequestDispatcher("/RefreshWordServlet").forward(request, response);
+//		request.setAttribute("teacherNumber", teacherNum);
+		request.getRequestDispatcher("/ShowLeaveMessageServlet?teacherNumber="+"201206060115").forward(request, response);
 		}
 		else
 		{

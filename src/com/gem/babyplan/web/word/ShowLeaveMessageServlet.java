@@ -24,6 +24,7 @@ public class ShowLeaveMessageServlet extends HttpServlet
 		WordService ws = new WordService();
 		
 		String teacherNumber=request.getParameter("teacherNumber");
+		System.out.println(teacherNumber);
 		//得到教师的num
 		if(teacherNumber==null)
 		{
